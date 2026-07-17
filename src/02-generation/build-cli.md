@@ -4,7 +4,7 @@
 
 ## Objective
 
-Add the `panoptes-gen` binary: a `clap` CLI that loads a family YAML, generates vignettes, writes each prompt to `prompts/`, and writes `manifest.csv` — the join spine every later stage reads. Test the manifest writer, then run the binary end to end.
+Add the `panoptes-gen` binary: a `clap` CLI that loads a family TOML, generates vignettes, writes each prompt to `prompts/`, and writes `manifest.csv` — the join spine every later stage reads. Test the manifest writer, then run the binary end to end.
 
 ## Concepts exercised
 
@@ -17,7 +17,7 @@ Add the `panoptes-gen` binary: a `clap` CLI that loads a family YAML, generates 
 1. **Write a failing test** for `write_manifest`: header present, one row per vignette, IDs appear.
 2. **Predict** the line count of the manifest for N vignettes (remember the header).
 3. **Run**, check.
-4. **Implement**, then run the actual binary: `cargo run -p panoptes-gen -- --family scenarios/families/ca_geo.yaml`.
+4. **Implement**, then run the actual binary: `cargo run -p panoptes-gen -- --family scenarios/families/ca_geo.toml`.
 5. **Verify** the output files exist, **commit**.
 
 ## Done when

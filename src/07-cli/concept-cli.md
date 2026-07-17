@@ -15,7 +15,7 @@ Here is the idea that separates a script from a tool. When your program finishes
 Concretely, exit codes are what let programs **compose**. The book shows it with the shell's `&&`: <cite index="0-3">only if the first process reports success will the second process run.</cite> So this becomes possible:
 
 ```bash
-panoptes generate --family ca_geo.yaml && panoptes run --epochs 5
+panoptes generate --family ca_geo.toml && panoptes run --epochs 5
 ```
 
 The `run` stage fires only if `generate` succeeded. If generation fails and exits non-zero, `run` never starts, and the whole line fails loudly. That is the behavior you want in a pipeline or a CI job — and it only works if each stage reports its status honestly.

@@ -15,12 +15,12 @@ id = "9c212ba6-1a55-44c5-b7be-db3d98360e09"
 
 [[questions]]
 type = "MultipleChoice"
-prompt.prompt = "Why does the same `#[derive(Deserialize)]` handle both the YAML family spec and JSON records?"
+prompt.prompt = "Why does the same `#[derive(Deserialize)]` handle both the TOML family spec and JSON records?"
 prompt.distractors = [
   "serde has separate derives per format that happen to look the same",
-  "YAML and JSON are the same format",
-  "The derive only works for YAML and JSON is special-cased",
+  "TOML and JSON are the same format",
+  "The derive only works for TOML and JSON is special-cased",
 ]
-answer.answer = "serde is format-agnostic: the derive describes the type's shape, and a format crate (serde_yaml, serde_json) handles the encoding"
-context = """serde separates the data model (your derived types) from the format (the serde_* crate). One derive, many formats. This is why moving between YAML config and JSON logs costs you nothing."""
+answer.answer = "serde is format-agnostic: the derive describes the type's shape, and a format crate (toml, serde_json) handles the encoding"
+context = """serde separates the data model (your derived types) from the format (the format crate). One derive, many formats. This is why moving between TOML config and JSON logs costs you nothing."""
 id = "61586956-98b9-4eec-aa06-ed06d25e111f"

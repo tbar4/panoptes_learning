@@ -3,9 +3,9 @@
 
 [[questions]]
 type = "MultipleChoice"
-prompt.prompt = "Why does validity logic (which parameter combinations are meaningful) live in Rust code rather than in the family YAML?"
+prompt.prompt = "Why does validity logic (which parameter combinations are meaningful) live in Rust code rather than in the family TOML?"
 prompt.distractors = [
-  "YAML cannot express boolean logic",
+  "TOML cannot express boolean logic",
   "It runs faster in Rust",
   "serde cannot parse rules",
 ]
