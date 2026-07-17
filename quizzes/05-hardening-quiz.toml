@@ -1,0 +1,26 @@
+# Part VI — Hardening
+# (auto-converted from MCQ; some upgraded to ShortAnswer/Tracing by hand)
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "The Stage-4 reliability step is written as a README contract rather than Rust code. What is the reasoning?"
+prompt.distractors = [
+  "Laziness — it should be Rust",
+  "Rust cannot read CSV",
+  "It is optional and may be skipped",
+]
+answer.answer = "Reliability statistics belong in Python where the implementations are mature and correct; the README makes the file contract between Rust output and Python analysis explicit"
+context = """The boundary is a deliberate right-tool decision, and documenting it as a contract (what Python reads, what it produces) keeps the handoff explicit rather than implicit. The Rust side stops at producing the validated files."""
+id = "c561bd2a-56fc-4288-aa8e-8ae9f42208c3"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Which set of invariants does the workspace README enshrine?"
+prompt.distractors = [
+  "Speed, memory, concurrency, and safety",
+  "Only that all tests pass",
+  "The pinned model list",
+]
+answer.answer = "Append-only log, blinded sheets, enums-as-validation, and manifest-as-join-spine"
+context = """Those four are the load-bearing correctness properties built across the course: the log only grows, sheets cannot leak identity, coded values cannot leave the codebook, and the manifest ties everything together for analysis. The README states them so they survive future edits."""
+id = "4822cc83-ad85-4f5b-bef6-3a55ece4b20d"

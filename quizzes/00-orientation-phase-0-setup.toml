@@ -1,0 +1,47 @@
+# Phase 0 Concept-Check
+# Mixed types
+
+# --- Tracing: read the assertion failure (the whole chapter's skill) ---
+[[questions]]
+type = "Tracing"
+prompt.program = """
+fn add(a: i32, b: i32) -> i32 {
+    a + b
+}
+
+fn main() {
+    println!("{}", add(2, 2));
+}
+"""
+answer.doesCompile = true
+answer.stdout = "4"
+context = """
+This compiles and prints `4`. The Phase 0 exercise deliberately starts from a *failing test* (`assert_eq!(add(2,2), 5)`) so you learn to read the `left: 4, right: 5` output, but the underlying function is correct. The skill being built is reading compiler and test output fluently, which every later build chapter depends on.
+"""
+id = "67cb7456-7665-47f7-9b8f-bd1a8d0782e0"
+
+# --- ShortAnswer: recall the attribute ---
+[[questions]]
+type = "ShortAnswer"
+prompt.prompt = "What attribute do you write above a function to mark it as a test that `cargo test` will run? (Include the `#[ ]`.)"
+answer.answer = "#[test]"
+answer.alternatives = ["test"]
+context = """
+`#[test]` marks a function as a test case. It is distinct from `#[cfg(test)]`, which conditionally compiles an entire module only during testing. `#[test]` marks the individual test; `#[cfg(test)]` gates the module it lives in.
+"""
+id = "5dc1e092-9a3d-41a4-81a5-a1f2168b16c1"
+
+# --- MultipleChoice: the pedagogy ---
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why does this course insist you write the failing test and predict its output *before* writing the implementation?"
+prompt.distractors = [
+  "It is a required Rust convention",
+  "It makes the code compile faster",
+  "It produces better git history",
+]
+answer.answer = "The gap between your prediction and the real error is where the understanding forms"
+context = """
+The pedagogy is the point. A wrong prediction followed by the real compiler message teaches you what the type system is actually enforcing, far more efficiently than reading working code. Frequent commits and clean history are nice, but they are not why we predict.
+"""
+id = "43fb38b2-6cd7-4cb0-a453-cb9ca1349d62"

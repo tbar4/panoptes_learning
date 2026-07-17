@@ -1,0 +1,26 @@
+# Iterators Concept-Check
+# (auto-converted from MCQ; some upgraded to ShortAnswer/Tracing by hand)
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "In the generation chain `iproduct!(...).filter(valid).map(to_vignette).collect()`, when does the actual work happen?"
+prompt.distractors = [
+  "At iproduct! — the product is fully built immediately",
+  "At each stage as it is defined",
+  "At compile time",
+]
+answer.answer = "At collect() — iterators are lazy and nothing computes until the chain is consumed"
+context = """Rust iterators are lazy. iproduct!, filter, and map only describe the computation; collect() drives it, pulling values through the whole chain. Until then, no combination is actually generated."""
+id = "1c22e16f-2e5c-4fd1-9e2d-40a380fac99b"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why prefer the iterator chain over four nested for-loops here?"
+prompt.distractors = [
+  "It is always faster",
+  "Loops cannot express cartesian products",
+  "Iterators use less memory in every case",
+]
+answer.answer = "It is lazy, composable, and makes the shape of the computation (product, minus invalid, mapped to vignettes) legible — and the compiler makes it as tight as the loop anyway"
+context = """The win is legibility and composability at no performance cost — monomorphization typically makes the chain as fast as the loop. Loops can express the product; they just read less clearly and are harder to test stage by stage."""
+id = "34d000dd-4b36-45f0-9027-5b4c2dfa4a5c"

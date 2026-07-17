@@ -1,0 +1,78 @@
+# Borrowing Concept-Check
+# Mixed types: Tracing, ShortAnswer, MultipleChoice
+
+# --- Tracing: the classic "mutable while shared" violation ---
+[[questions]]
+type = "Tracing"
+prompt.program = """
+fn main() {
+    let mut v = vec![1, 2, 3];
+    let first = &v[0];
+    v.push(4);
+    println!("{first}");
+}
+"""
+answer.doesCompile = false
+context = """
+`let first = &v[0];` takes a **shared** borrow of the vector, and that borrow is still live at the `println!`. But `v.push(4)` needs a **mutable** borrow of `v` in the middle. Shared and mutable borrows cannot coexist — "many readers or one writer, never both" — so the compiler rejects this (error E0502). In the flows model, the shared-borrow flow and the mutable-borrow flow overlap illegally.
+"""
+id = "45e6cbc7-3a80-4e33-9cd6-c49428a95efa"
+
+# --- Tracing: fine once the shared borrow's flow has ended ---
+[[questions]]
+type = "Tracing"
+prompt.program = """
+fn main() {
+    let mut v = vec![1, 2, 3];
+    let first = v[0];
+    v.push(4);
+    println!("{first}");
+}
+"""
+answer.doesCompile = true
+answer.stdout = "1"
+context = """
+Here `let first = v[0];` **copies** the `i32` out rather than borrowing the vector (i32 is `Copy`). No borrow of `v` is left alive, so `v.push(4)` is free to take its mutable borrow. The shared-borrow flow never exists, so nothing conflicts. The one-character change from `&v[0]` to `v[0]` is the whole difference.
+"""
+id = "dcef1c6c-f2a2-4fba-bc84-6dfa8af6d6e6"
+
+# --- ShortAnswer: recall the sigil ---
+[[questions]]
+type = "ShortAnswer"
+prompt.prompt = "What do you write before a value to create a shared (read-only) reference to it? (Give the symbol.)"
+answer.answer = "&"
+answer.alternatives = ["&T", "ampersand"]
+context = """
+`&value` creates a shared reference — read-only, and any number may exist at once. A mutable reference is `&mut value` — read-write, but exclusive. The borrow rule: any number of `&`, or exactly one `&mut`, never both at the same time.
+"""
+id = "539fda26-5444-4be4-b464-62c6fe35f29f"
+
+# --- MultipleChoice: state the rule ---
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "What is the borrow checker's core rule about references to a single value?"
+prompt.distractors = [
+  "You may have at most one reference of any kind",
+  "You may have any number of mutable references as long as they do not write simultaneously",
+  "References must always be mutable",
+]
+answer.answer = "You may have any number of shared (&) references, OR exactly one mutable (&mut) reference, but never both at once"
+context = """
+Many readers or one writer, never both. Shared references are read-only and unlimited; a mutable reference is read-write and exclusive. This is the rule that makes data races impossible at compile time, because a race needs concurrent access with a writer — exactly what is forbidden.
+"""
+id = "bd138c41-2620-476f-ab39-b6e89608f66a"
+
+# --- MultipleChoice: the shared-ref semantics ---
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "You pass `&params` (a shared reference) to a function. After the call returns, what can you do with `params`?"
+prompt.distractors = [
+  "Nothing — it was moved into the function",
+  "Only read it, never modify it again",
+  "Only use it if the function did not modify it",
+]
+answer.answer = "Use it normally — the function only borrowed it, so ownership never left you"
+context = """
+A shared reference borrows without moving. The function reads params through the reference; ownership stays with you the whole time. When the call returns, the borrow ends and you have full use of params again. This is why so many signatures take & — it lets callers keep their values.
+"""
+id = "d8977662-910d-495d-9864-29cf4327a8d3"

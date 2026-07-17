@@ -1,0 +1,26 @@
+# Async Traits Concept-Check
+# (auto-converted from MCQ; some upgraded to ShortAnswer/Tracing by hand)
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why annotate the ModelClient trait with `#[async_trait]`?"
+prompt.distractors = [
+  "It makes the trait faster",
+  "It is required for all traits",
+  "It adds serialization",
+]
+answer.answer = "It rewrites async trait methods into a form that works with dynamic dispatch (Box<dyn ModelClient>), which the ergonomic path requires"
+context = """async_trait desugars async methods in traits into a boxed-future form compatible with dyn dispatch. Without it, an async trait used behind Box<dyn ...> is awkward or unavailable depending on your toolchain. It lets you write async methods naturally."""
+id = "398e02db-2d8a-4234-8c10-abd388d14549"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why do boxed clients often need `ModelClient: Send + Sync`?"
+prompt.distractors = [
+  "To serialize them",
+  "To make them clonable",
+  "Send and Sync are only for testing",
+]
+answer.answer = "Because the multi-threaded runtime may move futures between threads, so the clients inside must be safe to send and share across threads"
+context = """Send means safe to move to another thread; Sync means safe to share by reference across threads. tokio's multi-threaded runtime can relocate work, so the values captured must satisfy these bounds. You rarely implement them (they are automatic) but you do require them."""
+id = "5ac27c57-1638-44ee-b05f-c76d6480ea5f"

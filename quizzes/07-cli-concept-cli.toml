@@ -1,0 +1,38 @@
+# CLI Concept-Check
+# (auto-converted from MCQ; some upgraded to ShortAnswer/Tracing by hand)
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why does correctly reporting a non-zero exit code on failure matter?"
+prompt.distractors = [
+  "It makes the program run faster",
+  "It is required for the program to compile",
+  "It only matters for logging",
+]
+answer.answer = "Exit codes let programs compose: in `a && b`, b runs only if a succeeded, so an honestly-reported failure stops the chain instead of letting a broken result flow downstream"
+context = """A well-behaved CLI reports success (0) or failure (non-zero) to the OS. That status is what shell operators like && and CI pipelines check. If a program fails but reports success, downstream steps run on bad data. Composability depends on honest exit codes."""
+id = "98cbed14-a751-4274-99c6-c397913bbbb9"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "How does `panoptes code` exiting non-zero on an off-codebook value connect to the rest of the course?"
+prompt.distractors = [
+  "It does not — exit codes are unrelated to validation",
+  "It makes coding faster",
+  "It replaces the need for the codebook",
+]
+answer.answer = "It is the final form of enums-as-validation: an invalid coded value fails to parse, becomes a process failure, and that failure stops a pipeline like `panoptes code --coded x.csv && run-analysis`"
+context = """The chain completes: the enum rejects the bad value at parse time, the CLI turns that into a non-zero exit, and the exit code stops downstream analysis. The Part II type property becomes an operational gate — invalid data cannot reach analysis because the process fails first."""
+id = "d3ec1e18-2703-4bd8-a34c-3bd5185f6ce3"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why model CLI subcommands (generate/run/code) as an enum?"
+prompt.distractors = [
+  "Enums are faster than structs",
+  "clap only accepts enums",
+  "To avoid writing three binaries",
+]
+answer.answer = "Each subcommand is one variant of a closed set, matching the enum-as-closed-set idea from Part II; the parser dispatches on which variant it parsed and you match to run the right stage"
+context = """Subcommands are a fixed, closed set of verbs — exactly what an enum models. clap parses the arguments into the matching variant, and a match expression routes to the right stage. It is the same closed-set discipline you used for codebook values, applied to the CLI's shape."""
+id = "e647515e-ea19-4b14-9f8a-df85865bfcfe"

@@ -1,0 +1,61 @@
+# Ownership & Moves Concept-Check
+# Mixed types: Tracing (compiler-checked), ShortAnswer (recall), MultipleChoice (judgment)
+
+# --- Tracing: the move error, checked by the real compiler ---
+[[questions]]
+type = "Tracing"
+prompt.program = """
+fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1;
+    println!("{s1}");
+}
+"""
+answer.doesCompile = false
+context = """
+`String` is not `Copy`, so `let s2 = s1;` **moves** ownership into `s2`. The `println!` then tries to use `s1` after it has been moved, which the borrow checker rejects (error E0382, "borrow of moved value"). This is the single most important difference from Python: assignment of an owned value moves it, it does not create a second name for the same object.
+"""
+id = "6afa7d95-55f2-4431-9d74-b01742c30a38"
+
+# --- Tracing: same shape but Copy, so it compiles and prints ---
+[[questions]]
+type = "Tracing"
+prompt.program = """
+fn main() {
+    let x = 5;
+    let y = x;
+    println!("{x} {y}");
+}
+"""
+answer.doesCompile = true
+answer.stdout = "5 5"
+context = """
+`i32` implements `Copy`, so `let y = x;` **copies** the bits rather than moving. Both `x` and `y` remain valid and each holds `5`. Contrast this with the `String` version, which does not compile — the only difference is whether the type is `Copy`, and that difference is exactly why `Params` (all simple fields) can derive `Copy` while `Vignette` (holds a `String`) cannot.
+"""
+id = "b7624fec-e989-4688-a38f-dd8d910b6656"
+
+# --- ShortAnswer: recall the trait name ---
+[[questions]]
+type = "ShortAnswer"
+prompt.prompt = "What is the name of the trait a type must implement for `let b = a;` to copy the value instead of moving it?"
+answer.answer = "Copy"
+answer.alternatives = ["the Copy trait", "std::marker::Copy"]
+context = """
+`Copy` marks types whose values are safe to duplicate by copying their bits — integers, floats, bools, and small aggregates of those. A type that owns a resource it must free on drop (like `String`) can never be `Copy`, because bit-copying would create two owners of the same allocation.
+"""
+id = "f311667d-72b1-4fa8-b8fd-20a965dd804b"
+
+# --- MultipleChoice: the conceptual judgment ---
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "How does 'every value has exactly one owner' relate to Rust having no garbage collector?"
+prompt.distractors = [
+  "It does not — they are separate features",
+  "The garbage collector uses ownership to decide what to free",
+  "Ownership makes GC faster",
+]
+answer.answer = "Because ownership is unique, the compiler knows exactly when each value's owner goes out of scope, so it can insert the cleanup (drop) at compile time — no runtime collector needed"
+context = """
+Single ownership means the moment of cleanup is statically determined: when the owner's scope ends, the value drops. The compiler inserts that drop for you at build time. No runtime GC has to trace and decide — the ownership rules already answer 'when is this freed?' deterministically.
+"""
+id = "d7ed3a29-c49f-412c-bd8b-a82cb9c5ad47"

@@ -1,0 +1,48 @@
+# Part IV — Async
+# (auto-converted from MCQ; some upgraded to ShortAnswer/Tracing by hand)
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Across the async arc, what is the single most common mistake the workspace lint (deny unused_must_use) is designed to catch?"
+prompt.distractors = [
+  "Forgetting a semicolon",
+  "Using the wrong integer type",
+  "Missing a derive",
+]
+answer.answer = "Creating a future by calling an async fn but forgetting to .await it, silently discarding the work"
+context = """An un-awaited future does nothing. It is an easy and invisible bug — the request simply never happens. Denying unused_must_use turns that warning into a build error, so the mistake cannot ship."""
+id = "b64d5c8d-5d70-4016-85a7-cd3959fda50e"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "The response_id is a hash of (vignette_id, model, epoch) rather than a readable string. Why?"
+prompt.distractors = [
+  "Hashes are shorter",
+  "Hashing is required by JSONL",
+  "To make ids unique, which a readable string could not do",
+]
+answer.answer = "So a coder looking at a coding sheet cannot read the model or parameters off the id — preserving blinding, which matters because the builder is also a coder"
+context = """A readable id like 'ca_geo-030-claude-x-0' would leak the model and parameters onto the coding sheet, breaking blinding. The hash keeps the id deterministic (reproducible) but opaque (reveals nothing). Uniqueness could be achieved either way; opacity is the reason."""
+id = "2a23d314-0f1e-44e7-b6a3-643ebb19a863"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why can the Anthropic client be tested with zero API spend and full determinism?"
+prompt.distractors = [
+  "The test skips the network by stubbing reqwest",
+  "The API is free in test mode",
+  "Tests cache real responses",
+]
+answer.answer = "wiremock provides a real local server returning canned responses, and the client's injectable base_url points at it instead of the real API"
+context = """The client makes a genuine HTTP request to a local wiremock server that returns exactly what the test configured. Real request path, controlled response, no key, no cost, no flakiness — enabled by the base_url seam the test forced."""
+id = "63b8d187-066d-42a7-b075-004097b5e79a"
+
+[[questions]]
+type = "ShortAnswer"
+prompt.prompt = "Rust has no built-in async runtime. What is the name of the de facto standard runtime crate this course uses to drive futures?"
+answer.answer = "tokio"
+answer.alternatives = ["Tokio"]
+context = """
+`tokio` is the ecosystem-standard async runtime. The `#[tokio::main]` attribute sets it up so your top-level async code has a scheduler to poll its futures. Futures are inert on their own — the runtime is what drives them to completion.
+"""
+id = "3884b25d-cfdd-4d7b-b2ed-0f95615b45c5"

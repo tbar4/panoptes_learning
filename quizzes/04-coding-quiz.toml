@@ -1,0 +1,26 @@
+# Part V — Coding
+# (auto-converted from MCQ; some upgraded to ShortAnswer/Tracing by hand)
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "In the coded-CSV loader, where does a row with `c2_logic = \"AGGRESSIVE\"` actually fail?"
+prompt.distractors = [
+  "In check_anchors, because the quote is empty",
+  "It does not fail; it loads with a default",
+  "At compile time",
+]
+answer.answer = "In load_coded's deserialization — the string does not match any StrategicLogic variant, so the row never becomes a CodedRow"
+context = """The enum's serde deserialization rejects the unknown string. The failure is in the parse (load_coded), not in a later check. This is the enums-as-validation property from Part II, now running as a CLI gate."""
+id = "ce2d8767-24bc-475c-9d0a-bdae1ef2eac3"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Blinding and enums-as-validation are described as 'the same move, one level up'. What is that move?"
+prompt.distractors = [
+  "Writing more tests",
+  "Using serde everywhere",
+  "Keeping files small",
+]
+answer.answer = "Putting a correctness property into the type, so it holds structurally rather than depending on anyone remembering it"
+context = """Both push an invariant into the type. Enums make an invalid value unconstructable; the blank sheet makes a leaking sheet unconstructable (no field for the model). The property is enforced by what the data is, not by discipline."""
+id = "623611b0-3179-4ee9-8c92-e01df52f5ba5"

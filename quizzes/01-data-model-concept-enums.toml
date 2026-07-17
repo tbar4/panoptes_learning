@@ -1,0 +1,65 @@
+# Enums-as-Validation Concept-Check
+# The payoff chapter — includes the Tracing question that proves the core claim
+
+# --- Tracing: an off-codebook enum value fails to compile when matched non-exhaustively... ---
+# Better: show that a value outside the enum simply cannot be NAMED — it is a compile error.
+[[questions]]
+type = "Tracing"
+prompt.program = """
+enum StrategicLogic {
+    Control,
+    Maritime,
+    Political,
+}
+
+fn main() {
+    let logic = StrategicLogic::Aggressive;
+    println!("coded");
+}
+"""
+answer.doesCompile = false
+context = """
+`Aggressive` is not a variant of `StrategicLogic`, so `StrategicLogic::Aggressive` does not even name a value — it is a compile error (E0599, no variant named `Aggressive`). This is the type-level version of the payoff: the codebook's allowed values ARE the enum, so a value outside the codebook cannot be constructed at all. When this enum is fed by `serde` deserialization, the same closed-set property means an off-codebook *string* fails to parse rather than failing to compile — validation becomes a property of the boundary.
+"""
+id = "ae0c0deb-ea0e-4921-8547-e790b55f182f"
+
+# --- MultipleChoice: the runtime deserialization behavior ---
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "A coded CSV row has `c2_logic = \"AGGRESSIVE\"`, which is not a codebook value. With `StrategicLogic` as a serde-derived enum, what happens when you load that row?"
+prompt.distractors = [
+  "It loads as a CodedRow with an invalid field you must catch later",
+  "It loads and serde logs a warning",
+  "It silently falls back to the first variant",
+]
+answer.answer = "It fails to deserialize — the row never becomes a valid CodedRow"
+context = """
+serde matches the string against the enum's variants; a non-matching string is a deserialization error. The row does not become a CodedRow at all. The validation is the parse — there is no invalid-but-constructed state to catch downstream.
+"""
+id = "62f8ef6b-141b-4be0-bbd7-38e881791aa0"
+
+# --- ShortAnswer: name the principle ---
+[[questions]]
+type = "ShortAnswer"
+prompt.prompt = "Complete the well-known Rust design maxim about handling input safely: 'Parse, don't ______.'"
+answer.answer = "validate"
+answer.alternatives = ["validate."]
+context = """
+"Parse, don't validate" means making the act of parsing reject malformed input, so no invalid value can be constructed — rather than accepting loose data and checking it afterward. The enum-based codebook is a direct application: an off-codebook value cannot be parsed into a CodedRow, so no downstream code ever has to re-check it.
+"""
+id = "b51537b4-1fba-4260-817d-c75719c42177"
+
+# --- MultipleChoice: connection to the thesis ---
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "How does the enum relate to the thesis's 'rubric validity is the primary risk' concern?"
+prompt.distractors = [
+  "It makes the criteria themselves doctrinally defensible",
+  "It replaces the need for inter-rater reliability",
+  "It has no connection to the thesis",
+]
+answer.answer = "It guarantees recorded data conforms exactly to the defined codebook with zero drift — one fewer thing a committee can challenge, though it does not validate the criteria themselves"
+context = """
+The enum handles data conformance, not criterion quality. Doctrinal grounding and inter-rater reliability make the criteria defensible; the enum ensures the coded values never drift from the frozen codebook. Different problems, both necessary.
+"""
+id = "85c447ed-9966-469e-bd40-2bf017a47722"

@@ -1,0 +1,26 @@
+# Hygiene & Boundary Concept-Check
+# (auto-converted from MCQ; some upgraded to ShortAnswer/Tracing by hand)
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why keep Stages 5–6 (inter-rater reliability, analysis) in Python rather than extending the Rust harness?"
+prompt.distractors = [
+  "Rust cannot do math",
+  "Python is faster",
+  "The team only knows Python",
+]
+answer.answer = "The stats ecosystem for kappa/Krippendorff's alpha is mature and correct in Python and thin in Rust; reimplementing it by hand would add subtle correctness risk to the instrument you are trying to make defensible"
+context = """It is a rigor argument. The reliability statistics are load-bearing for the thesis; using correct, maintained implementations beats hand-rolling them in Rust. Right tool per stage, boundary drawn at the file contract."""
+id = "4fb80de8-dc58-487f-a142-56798ef9f521"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "What does 'the interface is the file, not a language binding' enable?"
+prompt.distractors = [
+  "Faster compilation",
+  "Automatic type sharing between Rust and Python",
+  "Running Python inside Rust",
+]
+answer.answer = "A typed Rust harness and a pandas notebook coexist with zero friction, because each side only depends on the JSONL/CSV schema — the same fungibility argument as the data model, applied to the whole pipeline"
+context = """Because both sides agree only on the file schema, neither depends on the other's implementation language. Rust writes the files; Python reads them. You could replace either side without touching the other. Boundaries at data, not code."""
+id = "ab91d37d-b8b8-4e1d-9082-ccfcc149bb12"

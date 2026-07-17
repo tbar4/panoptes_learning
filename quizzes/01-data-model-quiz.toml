@@ -1,0 +1,38 @@
+# Part II — Data Model
+# (auto-converted from MCQ; some upgraded to ShortAnswer/Tracing by hand)
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why does `panoptes-core` hold every type that crosses a crate boundary, rather than each crate defining its own?"
+prompt.distractors = [
+  "Rust requires all types in one crate",
+  "To make the core crate larger",
+  "Because serde only works in one crate per workspace",
+]
+answer.answer = "So the data model is defined exactly once and the compiler propagates any change everywhere downstream"
+context = """Single source of truth. Add a StrategicLogic variant in core and every dependent crate sees it immediately, with the compiler flagging anything that no longer handles all cases. Duplicated types would drift."""
+id = "07e01602-5a41-43f3-a6a5-4f8f14c2d50a"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "`vignette_id` produces a human-readable ID like `ca_geo-030-H-REV-INFO`. Later, `response_id` will be an opaque hash. Why the deliberate difference?"
+prompt.distractors = [
+  "Hashing is faster",
+  "They are the same and the difference is stylistic",
+  "response_id needs to be shorter",
+]
+answer.answer = "The vignette_id encodes parameters for the manifest join; the response_id must hide model and parameters so coders are blinded"
+context = """vignette_id is a join key that intentionally encodes parameters. response_id is opaque precisely so a coder looking at a coding sheet cannot read off which model or parameters produced the response — the blinding property, which matters because you are both builder and coder."""
+id = "368d1b69-49e7-4c83-a278-3c948ec319ae"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "What makes the JSONL schema of `ResponseRecord` 'the contract'?"
+prompt.distractors = [
+  "It is written in a contract file",
+  "serde enforces it legally",
+  "It cannot be changed once written",
+]
+answer.answer = "Every later stage and the Python analysis read it, so as long as the schema holds, the tool that produces it (Rust harness, or a Python fallback) can be swapped freely"
+context = """The value is in the interface, not the implementation. Analysis reads the JSONL; the harness writes it. Fix the schema and you can rewrite the harness in another language without touching anything downstream. That is what 'the tool is fungible' means."""
+id = "0545bf4f-f565-4760-945e-a22ffc21408c"

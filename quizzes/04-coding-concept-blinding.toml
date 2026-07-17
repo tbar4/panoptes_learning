@@ -1,0 +1,38 @@
+# Blinding Concept-Check
+# (auto-converted from MCQ; some upgraded to ShortAnswer/Tracing by hand)
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why is blinding enforced by the data structure (a BlankSheetRow with no model field) rather than by the coder choosing not to look?"
+prompt.distractors = [
+  "It is faster",
+  "serde requires it",
+  "So the file is smaller",
+]
+answer.answer = "Disciplines fail; making the sheet a type that simply has no field for model or parameters means identity cannot leak regardless of what the coder remembers"
+context = """The same philosophy as enums-as-validation: put the correctness property in the type. A sheet with no model field cannot leak the model, period. 'Just don't look' is a discipline that can slip; a missing field cannot be looked at."""
+id = "0a524181-f3b7-4454-bf7e-a504f718e754"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why is the coding-sheet shuffle deterministic (seeded) rather than truly random?"
+prompt.distractors = [
+  "True randomness is impossible in Rust",
+  "Deterministic shuffles are faster",
+  "To make the sheet sortable",
+]
+answer.answer = "So the ordering breaks model/parameter grouping (blinding) while remaining reproducible for the record"
+context = """You need two things: break the grouping that would leak identity, and be able to reproduce exactly what the coder saw. A seeded shuffle does both — random-looking order, but regenerable from the seed for the archive."""
+id = "15483e43-d7d2-47c1-8545-7828fe83ddeb"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why is blinding a sharper concern for this thesis than for a typical content-analysis study?"
+prompt.distractors = [
+  "It is not — blinding matters equally everywhere",
+  "Because the responses are long",
+  "Because there are many models",
+]
+answer.answer = "The builder and the coder are the same person with hypotheses about the models, so unblinded coding invites the charge that codes reflect expectations rather than responses"
+context = """When the analyst has strong priors about the subjects and also scores them, unblinded coding is a real validity threat a committee will probe. Structural blinding is the defense: the coder physically cannot see which model produced a response while scoring it."""
+id = "f960dda7-b660-4e84-ad8b-2302f6bd5600"

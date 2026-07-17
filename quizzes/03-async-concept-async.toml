@@ -1,0 +1,38 @@
+# async Concept-Check
+# (auto-converted from MCQ; some upgraded to ShortAnswer/Tracing by hand)
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "You write `client.generate(prompt);` without `.await`. What happens?"
+prompt.distractors = [
+  "The request is made synchronously",
+  "It runs on a background thread automatically",
+  "It is a compile error that stops the build",
+]
+answer.answer = "A future is created and immediately discarded — no request is made — and the compiler warns about the unused future"
+context = """An async fn returns a future that does nothing until driven by .await. Dropping it without awaiting discards the work. The compiler warns (unused must-use), which is why the workspace denies unused_must_use — to turn that easy mistake into a hard error."""
+id = "7b98fa33-203f-4dc8-bb1f-afd484f5fed7"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "What is the async runtime (tokio) responsible for?"
+prompt.distractors = [
+  "Compiling async functions",
+  "Converting async to synchronous code",
+  "Making HTTP requests directly",
+]
+answer.answer = "Polling futures, parking those that are waiting on I/O, and waking them when ready — the scheduler that actually drives async work"
+context = """Futures are inert; something must drive them. The runtime is that scheduler. Rust has no built-in runtime, so tokio provides it, and #[tokio::main] wires it up for your top-level async main."""
+id = "26991cf3-9ff6-4a46-a2f3-5738e0fea371"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "The async arc says most borrow-checker fights here are 'ownership problems in disguise'. What is the practical implication when you hit an intimidating async error?"
+prompt.distractors = [
+  "Rewrite the code without async",
+  "Add more .await calls",
+  "Switch to a different runtime",
+]
+answer.answer = "Read the error as an ownership question — what owns this value, and how long must this borrow live — because the fix is usually there, in the flows-and-moves model from Part I"
+context = """The genuinely new pieces are futures, await, and the runtime. But the errors that stall people are usually ownership and lifetime issues around values moved into futures — exactly the model the Foundations arc built. Reframing the scary error as 'what owns this, how long does this borrow live' is the move that unsticks it."""
+id = "8f0cb536-e712-4d4e-9353-7e3dd9a59347"

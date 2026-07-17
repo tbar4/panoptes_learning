@@ -1,0 +1,30 @@
+# Build: Vignette Generation
+
+> **Maps to:** Task 5. **Kind:** Build.
+
+## Objective
+
+Write `generate.rs`: the `all_params()` iterator over the parameter grid, and `generate()` which filters by validity, renders each prompt through `tera`, hashes it, and produces `Vignette`s. Prove the counts and the uniqueness of IDs with tests.
+
+## Concepts exercised
+
+- `itertools::iproduct!` over typed enum arrays.
+- `tera` templating: injecting parameters into the prompt template.
+- `sha2` hashing for the prompt fingerprint.
+
+## The build loop (you drive)
+
+1. **Write failing tests:** the raw grid has exactly 24 combinations; the validity filter reduces it to the expected number; all generated IDs are unique; a rendered prompt contains the injected parameter.
+2. **Predict:** how many vignettes remain after `CaGeo`'s filter removes the `HOURS + NOINFO` combos? Work it out from the grid dimensions before running.
+3. **Run**, check the arithmetic against reality.
+4. **Implement**.
+5. **Run** green, **commit**.
+
+<div class="callout predict">
+<span class="callout-label">Predict first</span>
+The <code>ids_are_unique</code> test is a guard against a subtle bug: if two different parameter combinations produced the same ID, your manifest join would silently collapse them. Before running, convince yourself the ID construction cannot collide for distinct params.
+</div>
+
+## Done when
+
+`cargo test -p panoptes-gen generate` passes, including the uniqueness guard.

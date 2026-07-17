@@ -1,0 +1,48 @@
+# Part VII — CLI
+# (auto-converted from MCQ; some upgraded to ShortAnswer/Tracing by hand)
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "The `panoptes` binary uses `assert_cmd` in an integration test. What does that test actually run?"
+prompt.distractors = [
+  "The functions directly, in-process",
+  "A mock of the CLI",
+  "Only the help text",
+]
+answer.answer = "The compiled binary as a subprocess, so it tests the real command-line behavior including argument parsing and exit codes"
+context = """assert_cmd invokes the built binary as an external process — the same way a user or a shell script would. That is what lets you assert on real exit codes and end-to-end behavior, not just internal function returns."""
+id = "909b2955-aa17-4bc1-92d2-7a0b9c74eb6f"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why return `ExitCode` (or `Result`) from main rather than managing exit integers by hand?"
+prompt.distractors = [
+  "It is faster",
+  "Raw integers do not work in Rust",
+  "It is required by clap",
+]
+answer.answer = "It pushes success/failure into a typed value the runtime translates to the OS exit code — the same 'correctness in types' theme, so an error becomes a non-zero exit automatically rather than by a convention you must remember"
+context = """Returning a type that carries success or failure means the process's exit status is handled by the type system, not by remembering to call a raw exit function. An Err propagating to main becomes a non-zero exit for free — honest exit codes without manual bookkeeping."""
+id = "2d8b289b-697c-49a6-9948-9efbcd78f11c"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "The subcommand enum gets a `match` in the dispatch. What does the compiler guarantee about that match?"
+prompt.distractors = [
+  "Nothing special",
+  "That the subcommands run in order",
+  "That help text is generated",
+]
+answer.answer = "Exhaustiveness: if you add a new subcommand variant and forget to handle it, the code will not compile — the same safety net enums gave codebook values, now guarding CLI dispatch"
+context = """Matching on an enum must cover every variant. Add a Report subcommand and forget to handle it, and the compiler stops you. Exhaustiveness turns 'I forgot a case' from a runtime surprise into a build error — the recurring theme, applied to the CLI's control flow."""
+id = "c91edaac-de01-41ea-bfdc-9beef5304256"
+
+[[questions]]
+type = "ShortAnswer"
+prompt.prompt = "By convention, what integer exit code does a command-line program return to signal success?"
+answer.answer = "0"
+answer.alternatives = ["zero"]
+context = """
+Exit code 0 means success; any non-zero code means failure. This convention is what makes shell composition work: in `a && b`, `b` runs only if `a` exited 0. `panoptes code` returns non-zero on invalid data precisely so it can gate a pipeline.
+"""
+id = "edd6fd56-c560-4238-9211-d26773a9d7be"
