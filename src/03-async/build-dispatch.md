@@ -14,6 +14,14 @@ Write `dispatch.rs`: the opaque `response_id` function and the `dispatch` loop o
 
 **Expected result:** `cargo test -p panoptes-harness` → **4 tests pass** crate-wide; `dispatch_writes_one_record_per_call` proves 2 vignettes × 1 client × 3 epochs → 6 records.
 
+## The spec (givens)
+
+- `response_id(vignette_id: &str, model: &str, epoch: u32) -> String`: the first **16 hex chars** of SHA-256 over the vignette id bytes, then the model bytes, then `epoch.to_le_bytes()`.
+- `dispatch(vignettes: &[Vignette], clients: &[Box<dyn ModelClient>], epochs: u32, log_path: &Path) -> anyhow::Result<usize>` — loop order vignette → client → epoch, one `append_record` per call, returns the count.
+- Binary CLI args: `--scenarios` (default `"scenarios/generated"`), `--log` (default `"harness/logs/responses.jsonl"`), `--epochs` (default `5`). Real runs read `ANTHROPIC_API_KEY` and optional `ANTHROPIC_BASE_URL` from the environment.
+
+Full code: [Answer Key, Task 9](../appendix-answer-key.html#task-9-dispatch-loop-over-manifest--models--epochs-stage-2c).
+
 ## Concepts exercised
 
 - Iterating over `&[Box<dyn ModelClient>]` and calling an async trait method.

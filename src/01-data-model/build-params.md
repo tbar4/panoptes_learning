@@ -19,6 +19,15 @@ Stand up the Cargo **workspace** and create `panoptes-core`, the crate that will
 
 **Expected result:** `cargo test -p panoptes-core params` → **2 tests pass** (`time_pressure_string_roundtrip`, `params_json_roundtrip`).
 
+## The spec (design decisions — givens, not puzzles)
+
+- `TimePressure` has variants `Hours`, `Days`; `Reversibility` has `Reversible`, `Irreversible`.
+- Both enums carry `#[strum(serialize_all = "UPPERCASE")]` — the string form is `"HOURS"`, `"IRREVERSIBLE"`. This convention is a design decision (it becomes the manifest CSV's wire format), not something to infer.
+- Derives on both enums: `Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Display, EnumString`.
+- `Params` has exactly four fields: `attribution_confidence: u8`, `time_pressure: TimePressure`, `reversibility: Reversibility`, `info_request: bool`. Derives: `Debug, Clone, Copy, PartialEq, Serialize, Deserialize`.
+
+Full code: [Answer Key, Task 1](../appendix-answer-key.html#task-1-workspace--core-parameter-types).
+
 ## Concepts exercised
 
 - Cargo **workspaces** and `[workspace.dependencies]` for shared version pinning.

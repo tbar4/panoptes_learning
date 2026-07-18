@@ -14,6 +14,15 @@ Create `vignette.rs` and `record.rs` in `panoptes-core`. Define `Vignette`, the 
 
 **Expected result:** `cargo test -p panoptes-core` → **7 tests pass** across the crate (2 params + 3 codes + 1 vignette + 1 record). The shared data model is complete.
 
+## The spec (givens)
+
+- `Vignette` fields: `id: String`, `family: String`, `params: Params`, `prompt: String`, `prompt_sha256: String`.
+- `vignette_id(family: &str, p: &Params) -> String` produces `family-<conf:03>-<H|D>-<REV|IRREV>-<INFO|NOINFO>` — e.g. `ca_geo-030-H-REV-INFO` (confidence zero-padded to 3 digits).
+- `Usage` fields: `input_tokens: u32`, `output_tokens: u32`.
+- `ResponseRecord` fields, in order: `response_id: String`, `vignette_id: String`, `model: String`, `epoch: u32`, `params: Params`, `prompt: String`, `response: String`, `usage: Usage`, `run_at: chrono::DateTime<Utc>`.
+
+Full code: [Answer Key, Task 3](../appendix-answer-key.html#task-3-core-record--vignette-types-the-file-contract).
+
 ## Concepts exercised
 
 - `chrono::DateTime<Utc>` with serde support for timestamps.

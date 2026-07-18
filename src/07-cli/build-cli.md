@@ -6,6 +6,12 @@
 
 Create a top-level `panoptes` binary crate whose CLI is a `clap` subcommand enum wrapping the three stages: `generate`, `run`, and `code`. Make `main` return a type that produces the right OS exit code, and write an **integration test** (with `assert_cmd`) that runs the whole pipeline — generate, then run against a mock, then validate — and asserts the exit codes.
 
+## The spec (givens)
+
+- This task **extends** the plan (the Answer Key stops at Task 12), so there is no worked solution to compare against — by this point that is the point.
+- The subcommand enum has exactly three variants — `Generate`, `Run`, `Code` — each carrying the same args as the standalone binary it wraps (`--family`/`--out`; `--scenarios`/`--log`/`--epochs`; `--coded`).
+- `main` returns `std::process::ExitCode` (or `anyhow::Result`) so invalid data exits non-zero — the property the integration test asserts.
+
 ## Concepts exercised
 
 - `clap` derive with a `#[command(subcommand)]` enum.

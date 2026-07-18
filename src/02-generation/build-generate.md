@@ -14,6 +14,16 @@ Write `generate.rs`: the `all_params()` iterator over the parameter grid, and `g
 
 **Expected result:** `cargo test -p panoptes-gen generate` → **4 tests pass** (`grid_has_24_raw_combinations`, `validity_filter_reduces_count` → 18, `ids_are_unique`, `template_renders_params`).
 
+## The spec (givens)
+
+- The confidence levels are `const CONFIDENCES: [u8; 3] = [30, 60, 95];` — a design decision from the study, not derivable.
+- `all_params() -> impl Iterator<Item = Params>`: the cartesian product of confidences × both `TimePressure` variants × both `Reversibility` variants × `[true, false]` for `info_request` (3 × 2 × 2 × 2 = 24).
+- `generate(family: &impl ScenarioFamily, spec: &FamilySpec) -> anyhow::Result<Vec<Vignette>>`.
+- The tera context gets exactly four keys: `attribution_confidence` (number), `time_pressure` (its `Display` string), `info_request` (bool), `action_menu` (the vec joined with `", "`).
+- `prompt_sha256` is the lowercase-hex SHA-256 of the rendered prompt bytes.
+
+Full code: [Answer Key, Task 5](../appendix-answer-key.html#task-5-vignette-generation--manifest-stage-1b).
+
 ## Concepts exercised
 
 - `itertools::iproduct!` over typed enum arrays.

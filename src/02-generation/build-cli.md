@@ -12,6 +12,14 @@ Add the `panoptes-gen` binary: a `clap` CLI that loads a family TOML, generates 
 
 **Expected result:** `cargo test -p panoptes-gen manifest` → **1 test passes**; then `cargo run -p panoptes-gen -- --family scenarios/families/ca_geo.toml` prints `generated 18 vignettes → scenarios/generated` and leaves `manifest.csv` plus 18 files under `scenarios/generated/prompts/`.
 
+## The spec (givens)
+
+- CLI args: `--family <PathBuf>` (required) and `--out <PathBuf>` defaulting to `"scenarios/generated"`.
+- The manifest header is exactly `vignette_id,family,attribution_confidence,time_pressure,reversibility,info_request,prompt_sha256`, then one row per vignette using each enum's `Display` string. No prompt body in the manifest.
+- Each prompt is written to `<out>/prompts/<vignette_id>.txt`; the closing message goes to **stderr**: `generated {n} vignettes → {out}`.
+
+Full code: [Answer Key, Task 6](../appendix-answer-key.html#task-6-generation-cli--manifest-writer-stage-1c).
+
 ## Concepts exercised
 
 - `clap` derive for command-line argument parsing.

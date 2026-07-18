@@ -17,6 +17,14 @@ Create the `panoptes-harness` crate. Define the `ModelClient` trait (with `#[asy
 
 **Expected result:** `cargo test -p panoptes-harness jsonl` → **1 test passes** (`appends_without_truncating`).
 
+## The spec (givens)
+
+- `ModelResponse` fields: `text: String`, `usage: Usage` (from core). Derives: `Debug, Clone`.
+- The trait: `#[async_trait] pub trait ModelClient: Send + Sync` with exactly two methods — `fn model_name(&self) -> &str` (the pinned model string) and `async fn generate(&self, prompt: &str) -> anyhow::Result<ModelResponse>` (single-turn; the prompt is the entire input).
+- `append_record(path: &Path, rec: &ResponseRecord) -> anyhow::Result<()>` — opens with `OpenOptions::new().create(true).append(true)`, writes one `serde_json` line.
+
+Full code: [Answer Key, Task 7](../appendix-answer-key.html#task-7-modelclient-trait--append-only-jsonl-writer-stage-2a).
+
 ## Concepts exercised
 
 - Defining an async trait with `async_trait`.

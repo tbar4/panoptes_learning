@@ -22,7 +22,7 @@ This course is paired with a complete, worked implementation plan — the twelve
 | 12 — Lints, handoff, README | Part VI · Build: Lints, Handoff Contract, README |
 | 13 — Unified `panoptes` CLI | Part VII · Build: The Unified panoptes Command |
 
-The plan document itself (`2026-07-17-panoptes-harness.md`) lives alongside this book in your project files.
+The plan document itself is included in this book: **[Appendix: The Answer Key](./appendix-answer-key.html)** — every manifest, type, attribute, test, and expected output in full.
 
 ## The four invariants, in one place
 

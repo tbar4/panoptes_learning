@@ -14,6 +14,13 @@ Add workspace-wide lints, write the Stage-4 reliability handoff contract (a READ
 
 **Expected result:** `cargo build --workspace && cargo test --workspace && cargo clippy --workspace` all clean (26 tests across the four crates: 7 core + 10 gen + 4 harness + 5 coding), with clippy warning only on intentional library `unwrap`s, if any.
 
+## The spec (givens)
+
+- Lints: `[workspace.lints.rust] unused_must_use = "deny"` and `[workspace.lints.clippy] unwrap_used = "warn"` in the root manifest; every crate adds `[lints] workspace = true`.
+- The exact contents of both READMEs (files read/produced by Stage 4, the run sequence, the four invariants) are spelled out in the Answer Key — they are documentation to adapt, not prose to invent from scratch.
+
+Full code: [Answer Key, Task 12](../appendix-answer-key.html#task-12-workspace-lints-stage-4-handoff-stub-readme).
+
 ## Concepts exercised
 
 - `[workspace.lints]` and per-crate `[lints] workspace = true`.

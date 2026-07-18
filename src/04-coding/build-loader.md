@@ -14,6 +14,15 @@ Write `validate.rs`: `load_coded`, which parses each coded line into a `CodedRow
 
 **Expected result:** `cargo test -p panoptes-coding validate` → **3 tests pass**; then `cargo run -p panoptes-coding -- --coded /tmp/bad.jsonl` (a file with `"c2_logic":"AGGRESSIVE"`) exits **non-zero**, naming line 1.
 
+## The spec (givens)
+
+- `CodingError` fields: `line: usize` and `source: serde_json::Error`, derived with `thiserror` and the display format `"row {line}: {source}"`.
+- `load_coded(contents: &str) -> Result<Vec<CodedRow>, CodingError>` — skips blank lines, line numbers are 1-indexed.
+- `check_anchors(rows: &[CodedRow]) -> Result<(), String>` — errors with `"{response_id}: C2 logic coded without an anchor quote"` on the first empty `c2_anchor_quote`.
+- CLI: `--coded <PathBuf>`; success prints `OK: {n} coded rows valid against the codebook` to stderr; any failure exits non-zero.
+
+Full code: [Answer Key, Task 11](../appendix-answer-key.html#task-11-coded-csv-loader--parse-is-validation-stage-3b).
+
 ## Concepts exercised
 
 - Parse-is-validation in practice: deserialization as the gate.

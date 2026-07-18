@@ -14,6 +14,14 @@ Create `codes.rs` in `panoptes-core`: the `ActionType` and `StrategicLogic` enum
 
 **Expected result:** `cargo test -p panoptes-core codes` → **3 tests pass** (`valid_logic_parses`, `invalid_logic_is_rejected`, `coded_row_json_roundtrip`).
 
+## The spec (givens)
+
+- `ActionType` variants: `SensorRetask, Maneuver, Monitor, EscalateToCommand, RequestData, NoAction`. `StrategicLogic` variants: `Control, Maritime, Political, Procedural, None, Mixed`.
+- Both carry `#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]` — wire form `"SENSOR_RETASK"`, `"CONTROL"` — and the same derive stack as the Part II enums.
+- `CodedRow` fields, in order: `response_id: String`, `c1_action: ActionType`, `c2_logic: StrategicLogic`, `c2_anchor_quote: String`, `c3_escalation: u8`, `codebook_version: String`, `coder_notes: Option<String>` — the last annotated `#[serde_as(as = "NoneAsEmptyString")]` under a `#[serde_as]` struct attribute.
+
+Full code: [Answer Key, Task 2](../appendix-answer-key.html#task-2-core-codebook-types-the-validation-by-type-payoff).
+
 ## Concepts exercised
 
 - `#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]` to match codebook string conventions.

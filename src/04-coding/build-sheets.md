@@ -15,6 +15,15 @@ Create the `panoptes-coding` crate. Write `make_sheet`, which splits response re
 
 **Expected result:** `cargo test -p panoptes-coding sheets` → **2 tests pass** (`sheet_does_not_leak_identity`, `shuffle_is_deterministic_and_a_permutation`).
 
+## The spec (givens)
+
+- `BlankSheetRow` fields (all `String`, code fields empty in the blank): `response_id`, `response`, `c1_action`, `c2_logic`, `c2_anchor_quote`, `c3_escalation`, `codebook_version`, `coder_notes`. Derives: `Debug, Clone, Serialize`.
+- `KeyRow` fields: `response_id: String`, `vignette_id: String`, `model: String`, `epoch: u32` — the mapping coders never see.
+- `make_sheet(records: &[ResponseRecord]) -> (Vec<BlankSheetRow>, Vec<KeyRow>)`.
+- `shuffled_indices(n: usize, seed: u64) -> Vec<usize>`: Fisher–Yates driven by a small inline LCG (constants in the Answer Key) — deterministic per seed, no `rand` dependency.
+
+Full code: [Answer Key, Task 10](../appendix-answer-key.html#task-10-blinded-coding-sheets--blind-key-stage-3a).
+
 ## Concepts exercised
 
 - Splitting one record into two types by what each audience may see.

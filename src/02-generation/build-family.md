@@ -20,6 +20,15 @@ Create the `panoptes-gen` crate. Define `FamilySpec` (the TOML shape, loaded wit
 
 **Expected result:** `cargo test -p panoptes-gen family` and `cargo test -p panoptes-gen validity` → **5 tests pass** between them.
 
+## The spec (givens)
+
+- `FamilySpec` fields: `name: String`, `version: u32`, `title: String`, `doctrine_refs: Vec<String>`, `action_menu: Vec<String>`, `template: String`. Derives: `Debug, Clone, Deserialize`. Constructor: `from_toml(s: &str) -> anyhow::Result<Self>`.
+- The `ScenarioFamily` trait has exactly two methods: `fn name(&self) -> &str` and `fn is_valid(&self, p: &Params) -> bool`.
+- `CaGeo`'s exclusion rule: a combination is invalid when `time_pressure` is `Hours` **and** `info_request` is `false` (no time to act and no way to gather data).
+- The example `ca_geo.toml` content (family name, doctrine refs, action menu, template text) is data, not an exercise — copy it from the Answer Key.
+
+Full code: [Answer Key, Task 4](../appendix-answer-key.html#task-4-family-spec-loading--validity-trait-stage-1a).
+
 ## Concepts exercised
 
 - `toml` deserialization into a struct (same derive, different format).

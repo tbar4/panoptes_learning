@@ -14,6 +14,14 @@ Implement `AnthropicClient` — a concrete `ModelClient` that builds the request
 
 **Expected result:** `cargo test -p panoptes-harness anthropic` → **1 test passes** (`parses_a_mocked_completion`).
 
+## The spec (givens)
+
+- `AnthropicClient` fields: `api_key`, `model`, `base_url` (all public `String` — `base_url` injectable so tests can point at the mock) plus a private `http: reqwest::Client`. Constructor `new(api_key, model, base_url)`.
+- Request: `POST {base_url}/v1/messages` with headers `x-api-key: <key>` and `anthropic-version: 2023-06-01`; JSON body `{"model": …, "max_tokens": 1024, "messages": [{"role": "user", "content": <prompt>}]}`.
+- Response shape to deserialize: `{"content": [{"text": …}, …], "usage": {"input_tokens": …, "output_tokens": …}}` — concatenate the block texts in order.
+
+Full code: [Answer Key, Task 8](../appendix-answer-key.html#task-8-anthropic-client-against-a-mock-server-stage-2b).
+
 ## Concepts exercised
 
 - `reqwest` JSON POST with headers.
