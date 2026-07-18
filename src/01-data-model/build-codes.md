@@ -6,6 +6,14 @@
 
 Create `codes.rs` in `panoptes-core`: the `ActionType` and `StrategicLogic` enums and the `CodedRow` struct. Write the test that is the whole reason we chose Rust — **an invalid codebook value must fail to deserialize.**
 
+## Scaffold
+
+**Create:** `crates/panoptes-core/src/codes.rs`. **Modify:** `crates/panoptes-core/src/lib.rs` (declare and re-export the module).
+
+**Dependencies:** no manifest changes — `strum` (for `SCREAMING_SNAKE_CASE` serialization) and `serde_with` (for `NoneAsEmptyString` on `coder_notes`) are already in core's `Cargo.toml` from the previous chapter.
+
+**Expected result:** `cargo test -p panoptes-core codes` → **3 tests pass** (`valid_logic_parses`, `invalid_logic_is_rejected`, `coded_row_json_roundtrip`).
+
 ## Concepts exercised
 
 - `#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]` to match codebook string conventions.

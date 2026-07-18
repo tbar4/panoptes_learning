@@ -64,4 +64,5 @@
 ---
 
 [Appendix: The Full Task Plan](./appendix-task-plan.md)
+[Appendix: Workspace Scaffold](./appendix-scaffold.md)
 [Appendix: Reference Books](./appendix-books.md)

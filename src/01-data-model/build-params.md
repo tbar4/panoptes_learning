@@ -6,6 +6,19 @@
 
 Stand up the Cargo **workspace** and create `panoptes-core`, the crate that will hold every type crossing a boundary. Define the scenario parameter enums (`TimePressure`, `Reversibility`) and the `Params` struct, and prove with tests that they round-trip through strings and JSON.
 
+## Scaffold
+
+**Create** (this is a new project directory, separate from this book's repo):
+
+- `Cargo.toml` — the workspace manifest. Declare **every shared dependency** for the whole course under `[workspace.dependencies]` now (full annotated list in the [Workspace Scaffold appendix](../appendix-scaffold.html)); later crates then just write `dep = { workspace = true }`.
+- `crates/panoptes-core/Cargo.toml` — with `[dependencies]`: `serde`, `serde_with`, `strum`, `chrono` (all `{ workspace = true }`).
+- `crates/panoptes-core/src/lib.rs` — module declarations + re-exports.
+- `crates/panoptes-core/src/params.rs` — the types and their tests.
+
+**Dependencies this chapter actually exercises:** `serde` (derives) and `strum` (`Display`, `EnumString`). Add `serde_json` under `[dev-dependencies]` for the JSON round-trip test.
+
+**Expected result:** `cargo test -p panoptes-core params` → **2 tests pass** (`time_pressure_string_roundtrip`, `params_json_roundtrip`).
+
 ## Concepts exercised
 
 - Cargo **workspaces** and `[workspace.dependencies]` for shared version pinning.

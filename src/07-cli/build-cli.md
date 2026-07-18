@@ -26,6 +26,8 @@ tests/
 
 The three existing binaries can stay (they are handy for focused runs), or become thin shims. The new `panoptes` command is the front door.
 
+**Manifest:** add `"crates/panoptes-cli"` to the workspace `members`. Its `[dependencies]`: `panoptes-gen`, `panoptes-harness`, `panoptes-coding` (path deps), plus `clap`, `tokio`, `anyhow` (`{ workspace = true }`); `[dev-dependencies]`: `assert_cmd` and `tempfile` for the integration test.
+
 ## The build loop (you drive)
 
 1. **Write the failing integration test** first, in `tests/pipeline.rs`:

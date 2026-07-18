@@ -6,6 +6,14 @@
 
 Add workspace-wide lints, write the Stage-4 reliability handoff contract (a README documenting what Python reads and produces — not implemented in Rust), and write the workspace README with the run sequence and the invariants. Then a full `cargo build --workspace && cargo test --workspace && cargo clippy --workspace`.
 
+## Scaffold
+
+**Create:** `reliability/README.md` (the Python handoff contract) and the workspace `README.md`. **Modify:** the root `Cargo.toml` (add `[workspace.lints.rust]` / `[workspace.lints.clippy]`) and **every** crate's `Cargo.toml` (add `[lints] workspace = true` below `[package]`).
+
+**Dependencies:** none — this chapter adds configuration and documentation, not code.
+
+**Expected result:** `cargo build --workspace && cargo test --workspace && cargo clippy --workspace` all clean (26 tests across the four crates: 7 core + 10 gen + 4 harness + 5 coding), with clippy warning only on intentional library `unwrap`s, if any.
+
 ## Concepts exercised
 
 - `[workspace.lints]` and per-crate `[lints] workspace = true`.

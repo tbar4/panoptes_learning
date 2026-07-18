@@ -8,6 +8,18 @@ Create the `panoptes-gen` crate. Define `FamilySpec` (the TOML shape, loaded wit
 
 > **Why TOML for the spec:** it is the dialect you already speak (`Cargo.toml`), the `toml` crate is what Cargo itself builds on, and TOML has no implicit typing — a level named `"NO"` can never silently become `false` the way it can in YAML. For an instrument whose configs *are* the experimental conditions, unambiguous scalars beat terseness.
 
+## Scaffold
+
+**Create** (a whole new crate — remember to list it in the workspace `members`):
+
+- `crates/panoptes-gen/Cargo.toml` — `[dependencies]`: `panoptes-core = { path = "../panoptes-core" }`, plus `serde`, `toml`, `tera`, `sha2`, `itertools`, `clap`, `anyhow` (all `{ workspace = true }`); `[dev-dependencies]`: `serde_json`.
+- `crates/panoptes-gen/src/lib.rs`, `src/family.rs` (the `FamilySpec` + `from_toml`), `src/validity.rs` (the `ScenarioFamily` trait + `CaGeo`).
+- `scenarios/families/ca_geo.toml` — the first family spec (content + metadata only).
+
+**Dependencies this chapter exercises:** `toml` (spec parsing). `tera`/`sha2`/`itertools` sit unused until the next two chapters — declaring them now just saves manifest edits later.
+
+**Expected result:** `cargo test -p panoptes-gen family` and `cargo test -p panoptes-gen validity` → **5 tests pass** between them.
+
 ## Concepts exercised
 
 - `toml` deserialization into a struct (same derive, different format).

@@ -6,6 +6,14 @@
 
 Create `vignette.rs` and `record.rs` in `panoptes-core`. Define `Vignette`, the deterministic `vignette_id` function, `Usage`, and `ResponseRecord` — the struct that becomes one line in `responses.jsonl`, the dataset of record. These types are the **file contract**: the interface every later stage and the Python analysis tail depend on.
 
+## Scaffold
+
+**Create:** `crates/panoptes-core/src/vignette.rs` and `crates/panoptes-core/src/record.rs`. **Modify:** `crates/panoptes-core/src/lib.rs` (re-export both).
+
+**Dependencies:** no manifest changes — `chrono` (with its `serde` feature, for `DateTime<Utc>`) is already declared.
+
+**Expected result:** `cargo test -p panoptes-core` → **7 tests pass** across the crate (2 params + 3 codes + 1 vignette + 1 record). The shared data model is complete.
+
 ## Concepts exercised
 
 - `chrono::DateTime<Utc>` with serde support for timestamps.

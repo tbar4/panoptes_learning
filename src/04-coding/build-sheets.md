@@ -6,6 +6,15 @@
 
 Create the `panoptes-coding` crate. Write `make_sheet`, which splits response records into a `BlankSheetRow` (opaque id + response text + empty code fields) and a separate `KeyRow` (the id→model/params mapping coders never see). Add the seeded `shuffled_indices`. Prove the sheet leaks nothing.
 
+## Scaffold
+
+**Create** (new crate — add it to workspace `members`):
+
+- `crates/panoptes-coding/Cargo.toml` — `[dependencies]`: `panoptes-core = { path = "../panoptes-core" }`, plus `serde`, `serde_json`, `thiserror`, `clap`, `anyhow` (all `{ workspace = true }`); `[dev-dependencies]`: `tempfile = "3"`. (`thiserror` is for the next chapter's error type — the original task plan omits it, so declare it now.)
+- `crates/panoptes-coding/src/lib.rs` and `src/sheets.rs`.
+
+**Expected result:** `cargo test -p panoptes-coding sheets` → **2 tests pass** (`sheet_does_not_leak_identity`, `shuffle_is_deterministic_and_a_permutation`).
+
 ## Concepts exercised
 
 - Splitting one record into two types by what each audience may see.

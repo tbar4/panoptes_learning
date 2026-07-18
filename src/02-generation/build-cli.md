@@ -6,6 +6,12 @@
 
 Add the `panoptes-gen` binary: a `clap` CLI that loads a family TOML, generates vignettes, writes each prompt to `prompts/`, and writes `manifest.csv` — the join spine every later stage reads. Test the manifest writer, then run the binary end to end.
 
+## Scaffold
+
+**Create:** `crates/panoptes-gen/src/main.rs`. **Modify:** `crates/panoptes-gen/Cargo.toml` — add a `[[bin]] name = "panoptes-gen" path = "src/main.rs"` section and `tempfile = "3"` under `[dev-dependencies]` (the manifest test writes to a temp dir).
+
+**Expected result:** `cargo test -p panoptes-gen manifest` → **1 test passes**; then `cargo run -p panoptes-gen -- --family scenarios/families/ca_geo.toml` prints `generated 18 vignettes → scenarios/generated` and leaves `manifest.csv` plus 18 files under `scenarios/generated/prompts/`.
+
 ## Concepts exercised
 
 - `clap` derive for command-line argument parsing.

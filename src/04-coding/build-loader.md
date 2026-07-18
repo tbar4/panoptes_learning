@@ -6,6 +6,14 @@
 
 Write `validate.rs`: `load_coded`, which parses each coded line into a `CodedRow` — so an off-codebook value fails *here*, at the boundary — and `check_anchors`, enforcing the codebook rule that latent codes carry an anchor quote. Add the `panoptes-code` CLI. This is where the enums-as-validation payoff becomes a runnable command.
 
+## Scaffold
+
+**Create:** `crates/panoptes-coding/src/validate.rs` and `src/main.rs`. **Modify:** `crates/panoptes-coding/Cargo.toml` (add `[[bin]] name = "panoptes-code" path = "src/main.rs"`) and `src/lib.rs` (re-export `load_coded`, `check_anchors`, `CodingError`).
+
+**Dependencies:** `thiserror` (the `CodingError` derive with line-number context) — already in the manifest if you followed the previous chapter's Scaffold note.
+
+**Expected result:** `cargo test -p panoptes-coding validate` → **3 tests pass**; then `cargo run -p panoptes-coding -- --coded /tmp/bad.jsonl` (a file with `"c2_logic":"AGGRESSIVE"`) exits **non-zero**, naming line 1.
+
 ## Concepts exercised
 
 - Parse-is-validation in practice: deserialization as the gate.

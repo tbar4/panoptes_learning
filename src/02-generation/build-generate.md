@@ -6,6 +6,14 @@
 
 Write `generate.rs`: the `all_params()` iterator over the parameter grid, and `generate()` which filters by validity, renders each prompt through `tera`, hashes it, and produces `Vignette`s. Prove the counts and the uniqueness of IDs with tests.
 
+## Scaffold
+
+**Create:** `crates/panoptes-gen/src/generate.rs`. **Modify:** `crates/panoptes-gen/src/lib.rs` (re-export `all_params`, `generate`).
+
+**Dependencies:** no manifest changes — `itertools` (`iproduct!`), `tera`, and `sha2` were declared when you created the crate.
+
+**Expected result:** `cargo test -p panoptes-gen generate` → **4 tests pass** (`grid_has_24_raw_combinations`, `validity_filter_reduces_count` → 18, `ids_are_unique`, `template_renders_params`).
+
 ## Concepts exercised
 
 - `itertools::iproduct!` over typed enum arrays.

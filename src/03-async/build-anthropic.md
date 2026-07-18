@@ -6,6 +6,14 @@
 
 Implement `AnthropicClient` — a concrete `ModelClient` that builds the request, sends it, and parses the completion into a `ModelResponse`. Test it entirely against a `wiremock` mock server, spending no API credits.
 
+## Scaffold
+
+**Create:** `crates/panoptes-harness/src/anthropic.rs`. **Modify:** `crates/panoptes-harness/src/lib.rs` (re-export `AnthropicClient`).
+
+**Dependencies:** no manifest changes — `reqwest` and the dev-only `wiremock` were declared when you created the crate. The test needs `#[tokio::test]`, which `tokio`'s `full` features already cover.
+
+**Expected result:** `cargo test -p panoptes-harness anthropic` → **1 test passes** (`parses_a_mocked_completion`).
+
 ## Concepts exercised
 
 - `reqwest` JSON POST with headers.

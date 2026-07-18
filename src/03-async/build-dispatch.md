@@ -6,6 +6,14 @@
 
 Write `dispatch.rs`: the opaque `response_id` function and the `dispatch` loop over vignettes × clients × epochs, writing one `ResponseRecord` per call. Then the `panoptes-run` binary that loads the manifest, builds the pinned client list, and runs the loop. Test the ID's opacity and the loop's record count against a mock.
 
+## Scaffold
+
+**Create:** `crates/panoptes-harness/src/dispatch.rs` and `src/main.rs`. **Modify:** `crates/panoptes-harness/Cargo.toml` (add `[[bin]] name = "panoptes-run" path = "src/main.rs"`) and `src/lib.rs` (re-export `dispatch`, `response_id`).
+
+**Dependencies:** `sha2` for the response-id hash — already in the manifest if you followed the earlier Scaffold note (the original task plan forgets it). `chrono` supplies `Utc::now()`; `#[tokio::main]` runs the binary.
+
+**Expected result:** `cargo test -p panoptes-harness` → **4 tests pass** crate-wide; `dispatch_writes_one_record_per_call` proves 2 vignettes × 1 client × 3 epochs → 6 records.
+
 ## Concepts exercised
 
 - Iterating over `&[Box<dyn ModelClient>]` and calling an async trait method.
