@@ -208,12 +208,14 @@ use strum::{Display, EnumString};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Display, EnumString)]
 #[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ActionType {
     SensorRetask, Maneuver, Monitor, EscalateToCommand, RequestData, NoAction,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Display, EnumString)]
 #[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum StrategicLogic {
     Control, Maritime, Political, Procedural, None, Mixed,
 }

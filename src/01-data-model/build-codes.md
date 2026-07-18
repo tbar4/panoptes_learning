@@ -17,7 +17,7 @@ Create `codes.rs` in `panoptes-core`: the `ActionType` and `StrategicLogic` enum
 ## The spec (givens)
 
 - `ActionType` variants: `SensorRetask, Maneuver, Monitor, EscalateToCommand, RequestData, NoAction`. `StrategicLogic` variants: `Control, Maritime, Political, Procedural, None, Mixed`.
-- Both carry `#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]` — wire form `"SENSOR_RETASK"`, `"CONTROL"` — and the same derive stack as the Part II enums.
+- Both carry **two** attributes: `#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]` *and* `#[serde(rename_all = "SCREAMING_SNAKE_CASE")]` — wire form `"SENSOR_RETASK"`, `"CONTROL"` in both codecs — plus the same derive stack as the params enums. Unlike `params.rs` (where the strum and serde codecs never cross paths), the coded files are hand-filled with codebook strings and parsed by **serde** — so here the two codecs must agree, which means saying it to each codec separately. Omit the serde attribute and `serde_json::from_str::<StrategicLogic>("\"CONTROL\"")` fails with `unknown variant `CONTROL`, expected one of `Control`, …`.
 - `CodedRow` fields, in order: `response_id: String`, `c1_action: ActionType`, `c2_logic: StrategicLogic`, `c2_anchor_quote: String`, `c3_escalation: u8`, `codebook_version: String`, `coder_notes: Option<String>` — the last annotated `#[serde_as(as = "NoneAsEmptyString")]` under a `#[serde_as]` struct attribute.
 
 Full code: [Answer Key, Task 2](../appendix-answer-key.html#task-2-core-codebook-types-the-validation-by-type-payoff).
