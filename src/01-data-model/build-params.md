@@ -25,6 +25,25 @@ Stand up the Cargo **workspace** and create `panoptes-core`, the crate that will
 - `#[derive(...)]` stacking: `Serialize, Deserialize, Debug, Clone, Copy, PartialEq`.
 - `strum`'s `Display` + `EnumString` for enum↔string conversion.
 
+## What "round-trip" means, concretely
+
+Encode a value, decode the result, and assert you end up with **exactly the value you started with** — while also pinning what the encoded form looks like in between. A round-trip test proves the codec is lossless and freezes the wire format, so a refactor that silently changes `"HOURS"` to `"Hours"` fails a test instead of corrupting every downstream join. These strings become the manifest CSV and the JSONL log — the file contract.
+
+The two tests exercise **two independent codecs**, and they encode the same enum differently:
+
+| Direction | Expression | Expected |
+|---|---|---|
+| enum → string (strum `Display`) | `TimePressure::Hours.to_string()` | `"HOURS"` |
+| string → enum (strum `EnumString`) | `TimePressure::from_str("DAYS")` | `Ok(TimePressure::Days)` |
+| rejection | `TimePressure::from_str("MINUTES")` | `Err(_)` |
+| struct → JSON (serde) | `serde_json::to_string(&p)` | `{"attribution_confidence":60,"time_pressure":"Hours",…}` |
+| JSON → struct (serde) | `serde_json::from_str::<Params>(&json)` | a `Params` for which `assert_eq!(p, back)` holds |
+
+<div class="callout">
+<span class="callout-label">Two codecs, not one</span>
+<code>#[strum(serialize_all = "UPPERCASE")]</code> affects only <code>Display</code>/<code>FromStr</code> — so the string codec says <code>"HOURS"</code>. serde independently serializes the <em>variant name</em> — so JSON says <code>"Hours"</code>. That is fine: the manifest uses the strum codec in both directions, the JSONL log uses serde in both directions. But it is why each test must round-trip through its <em>own</em> codec, and why the enum→string direction is <code>Display</code>'s job — not <code>into()</code>/<code>try_into()</code>, which have no implementation here and will not compile.
+</div>
+
 ## The build loop (you drive)
 
 1. **Write the failing test** for `TimePressure` string round-tripping (`Hours` ↔ `"HOURS"`) and for `Params` JSON round-tripping. Derive them from the behavior described, not from the answer key.
