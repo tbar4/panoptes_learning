@@ -8,6 +8,59 @@ A **trait** is a set of behaviors a type promises to provide — Rust's version 
 
 You have used traits already (`Serialize`, `Display` are traits). Here you *define* one for the first time in this project, which is a small but real step up.
 
+Here is the complete mechanism on a toy domain (the same coffee shop from the iterators chapter): a trait, two types implementing it differently, and one generic function that works with both — and with any implementation written later:
+
+```rust
+#[derive(Debug, Clone, Copy)]
+enum Size { Small, Large }
+#[derive(Debug, Clone, Copy)]
+enum Roast { Light, Dark }
+
+struct Order { size: Size, roast: Roast, iced: bool }
+
+/// The behavior contract: any house can say what it is called
+/// and which orders it will actually make.
+trait House {
+    fn name(&self) -> &str;
+    fn allows(&self, order: &Order) -> bool;
+}
+
+struct Downtown;
+impl House for Downtown {
+    fn name(&self) -> &str { "downtown" }
+    fn allows(&self, o: &Order) -> bool {
+        !(matches!(o.size, Size::Small) && o.iced) // house rule: no small iced drinks
+    }
+}
+
+struct Airport;
+impl House for Airport {
+    fn name(&self) -> &str { "airport" }
+    fn allows(&self, o: &Order) -> bool {
+        !matches!(o.roast, Roast::Light) // house rule: dark roast only
+    }
+}
+
+/// Generic over the trait: works with ANY house, present or future.
+fn count_allowed(house: &impl House, orders: &[Order]) -> usize {
+    orders.iter().filter(|o| house.allows(o)).count()
+}
+
+fn main() {
+    let orders = [
+        Order { size: Size::Small, roast: Roast::Light, iced: true },
+        Order { size: Size::Large, roast: Roast::Light, iced: false },
+        Order { size: Size::Large, roast: Roast::Dark, iced: true },
+    ];
+    println!("{}: {} of {} allowed", Downtown.name(), count_allowed(&Downtown, &orders), orders.len());
+    println!("{}: {} of {} allowed", Airport.name(), count_allowed(&Airport, &orders), orders.len());
+    // downtown: 2 of 3 allowed
+    // airport: 1 of 3 allowed
+}
+```
+
+The mapping is one-for-one: `House` ↔ `ScenarioFamily`, `allows` ↔ `is_valid`, `count_allowed(&impl House, …)` ↔ `generate(family: &impl ScenarioFamily, …)`. Each house's rule is ordinary Rust in its `impl` — typed, testable, compiled — which is exactly where the next section says validity logic belongs. Adding a second scenario family later is adding an `impl`, not touching `generate`.
+
 ## The design decision that matters
 
 The consequential idea in this chapter is not the trait mechanics — it is **where the validity logic lives.** In the Python sketch, families carried a list of string "valid_rules" that were evaluated at runtime. That means: logic expressed as data, interpreted while the program runs, with errors surfacing only when a bad rule is hit.

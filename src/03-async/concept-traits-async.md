@@ -6,6 +6,47 @@
 
 You want a `ModelClient` trait with an `async fn generate`. But plain Rust traits could not, for a long time, contain async methods directly, and even now the ergonomic path for a trait used as `Box<dyn ModelClient>` is the **`async_trait`** macro. It rewrites your async trait methods into a form that works with dynamic dispatch. You annotate the trait and its impls with `#[async_trait]` and write async methods as if it just worked.
 
+Here is the whole pattern, working — a trait with an async method, two implementations, and a `Vec<Box<dyn …>>` calling them uniformly:
+
+```rust
+use async_trait::async_trait;
+
+#[async_trait]
+trait Oracle: Send + Sync {
+    fn name(&self) -> &str;
+    async fn answer(&self, question: &str) -> String;
+}
+
+struct Cheerful;
+#[async_trait]
+impl Oracle for Cheerful {
+    fn name(&self) -> &str { "cheerful" }
+    async fn answer(&self, q: &str) -> String { format!("{q}? Absolutely!") }
+}
+
+struct Grumpy;
+#[async_trait]
+impl Oracle for Grumpy {
+    fn name(&self) -> &str { "grumpy" }
+    async fn answer(&self, q: &str) -> String { format!("{q}? No.") }
+}
+
+#[tokio::main]
+async fn main() {
+    let oracles: Vec<Box<dyn Oracle>> = vec![Box::new(Cheerful), Box::new(Grumpy)];
+    for o in &oracles {
+        println!("{}: {}", o.name(), o.answer("Will it compile").await);
+    }
+}
+```
+
+```text
+cheerful: Will it compile? Absolutely!
+grumpy: Will it compile? No.
+```
+
+Substitute `Oracle` → `ModelClient`, `answer` → `generate`, and the two oracles → Anthropic and whatever provider comes second, and this *is* the dispatch loop's skeleton: heterogeneous clients in one `Vec`, one uniform async call. Note the three pieces you must not forget, because each produces a different confusing error when missing: `#[async_trait]` on the trait **and on every impl**, and the `Send + Sync` supertrait bound — which exists for the reason the next section explains.
+
 ## Send + Sync, briefly
 
 Because the runtime may move futures between threads, the things inside them must be safe to send across threads. Two marker traits express this: **`Send`** (safe to move to another thread) and **`Sync`** (safe to share by reference across threads). When you write `Box<dyn ModelClient>`, you will often need `ModelClient: Send + Sync` so the boxed clients can be used by the multi-threaded runtime.

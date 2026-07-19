@@ -10,7 +10,31 @@ Your harness makes hundreds of API calls. Each one spends almost all its time *w
 
 An `async fn` does not run when you call it. It returns a **future** — a value representing a computation that is not finished yet. The future does nothing until it is *driven*. You drive it with `.await`, which means "pause here until this future is ready, and let other work proceed meanwhile."
 
-This is the mental shift: in synchronous code, calling a function runs it. In async code, calling an `async fn` gives you a *description* of work; `.await` is what actually advances it.
+This is the mental shift: in synchronous code, calling a function runs it. In async code, calling an `async fn` gives you a *description* of work; `.await` is what actually advances it. Prove it with print order:
+
+```rust
+async fn fetch(label: &str) -> String {
+    println!("  fetch({label}) is actually running");
+    format!("{label}: done")
+}
+
+#[tokio::main]
+async fn main() {
+    let future = fetch("alpha");
+    println!("future created — nothing has run yet");
+
+    let result = future.await;
+    println!("{result}");
+}
+```
+
+```text
+future created — nothing has run yet
+  fetch(alpha) is actually running
+alpha: done
+```
+
+The body of `fetch` runs *after* the "future created" line — calling the function did not run it; `.await` did. (This is the same laziness you saw with iterators: adapters describe, `collect` drives. Futures describe, `.await` drives.)
 
 ## The runtime
 
@@ -21,6 +45,37 @@ Futures need something to drive them — a scheduler that polls them, parks the 
 It is worth having the exact lifecycle in mind rather than a vague sense of "it runs later." *Async Rust* describes a future's life this way: <cite index="0-1">when a future is created, it is idle — it has yet to be executed. Once executed, it can yield a value, resolve, or go to sleep because it is pending, and each subsequent poll returns either Pending or Ready until the future is resolved or cancelled.</cite> That polling loop — idle, then polled repeatedly, each poll answering "ready yet?" — is what the runtime is doing under every `.await`. You will rarely implement `poll` by hand, but knowing that `.await` is sugar over "poll this until it is `Ready`" demystifies the whole model.
 
 The same book makes the concurrency payoff concrete with a kitchen analogy: several tasks each spending time waiting can overlap, because <cite index="0-6">the executor sets a task to idle when it hits an await and works on the next task in the queue while polling the idle ones.</cite> That single sentence is why your harness benefits from async at all — while one API call waits on the network, another can be in flight.
+
+You can measure the payoff directly. Two 200ms "API calls," awaited one after the other versus driven concurrently with `tokio::join!`:
+
+```rust
+use std::time::{Duration, Instant};
+use tokio::time::sleep;
+
+async fn api_call(label: &str, ms: u64) -> String {
+    sleep(Duration::from_millis(ms)).await; // stand-in for waiting on the network
+    format!("{label} answered")
+}
+
+#[tokio::main]
+async fn main() {
+    let t = Instant::now();
+    let a = api_call("first", 200).await;
+    let b = api_call("second", 200).await;
+    println!("sequential: {a} / {b} in ~{}ms", t.elapsed().as_millis());
+
+    let t = Instant::now();
+    let (a, b) = tokio::join!(api_call("first", 200), api_call("second", 200));
+    println!("concurrent: {a} / {b} in ~{}ms", t.elapsed().as_millis());
+}
+```
+
+```text
+sequential: first answered / second answered in ~404ms
+concurrent: first answered / second answered in ~202ms
+```
+
+One thread, two waits overlapped, half the wall-clock. The dispatch loop you build in this arc awaits calls sequentially first — correctness before concurrency — but this is the capacity the async foundation gives you when the epoch counts grow.
 
 <div class="callout trap">
 <span class="callout-label">The trap that stalls people</span>

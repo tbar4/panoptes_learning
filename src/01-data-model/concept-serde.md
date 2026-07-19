@@ -15,16 +15,27 @@ In Python you would reach for `json.dumps` and `json.loads` and mostly not think
 Here is the thing that feels like magic at first, and that is worth demystifying now so it does not stay magic: **you almost never write the conversion code yourself.** You annotate a struct like this —
 
 ```rust
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct Params {
     attribution_confidence: u8,
     info_request: bool,
 }
+
+fn main() {
+    let p = Params { attribution_confidence: 60, info_request: true };
+
+    let json = serde_json::to_string(&p).unwrap();
+    println!("{json}"); // {"attribution_confidence":60,"info_request":true}
+
+    let back: Params = serde_json::from_str(&json).unwrap();
+    assert_eq!(p, back);
+    println!("round-tripped: {back:?}");
+}
 ```
 
-— and `serde` generates the conversion for you, tailored to that exact type. The code that turns a `Params` into JSON is *written, by the macro, before your program ever starts.* There is no reflection, no runtime inspection, no dictionary of fields being walked while your program runs, the way Python does it.
+— and `serde` generates the conversion for you, tailored to that exact type. Run it: field names become JSON keys, types map to JSON values, and the trip back reproduces an equal struct — without you writing a line of conversion code. The code that turns a `Params` into JSON is *written, by the macro, before your program ever starts.* There is no reflection, no runtime inspection, no dictionary of fields being walked while your program runs, the way Python does it.
 
 ## What "derive" actually is
 
@@ -36,7 +47,25 @@ You have already met this mechanism without thinking about it. `#[derive(Debug)]
 
 ## Why this matters: bugs move to compile time
 
-Here is the consequence that makes `serde` the right tool for a reproducibility-critical instrument. Because the generation happens **at compile time against your specific type**, the compiler can see the whole thing. If a field's type cannot be serialized, you find out when you build — not when a log write fails at two in the morning during your evaluation run.
+Here is the consequence that makes `serde` the right tool for a reproducibility-critical instrument. Because the generation happens **at compile time against your specific type**, the compiler can see the whole thing. If a field's type cannot be serialized, you find out when you build — not when a log write fails at two in the morning during your evaluation run. Watch it happen:
+
+```rust,compile_fail
+use serde::Serialize;
+
+#[derive(Serialize)]
+struct Bad {
+    name: String,
+    handle: std::fs::File, // what would serializing an open file even mean?
+}
+
+fn main() {}
+```
+
+```text
+error[E0277]: the trait bound `File: serde::Serialize` is not satisfied
+```
+
+The program never existed. In Python, the equivalent (`json.dumps` on an object holding a file handle) is a `TypeError` — at runtime, on the code path that happened to hit it.
 
 This is the first appearance of a theme that runs through the entire course:
 

@@ -10,11 +10,37 @@ From *Rust for Rustaceans*: <cite index="0-5">Rust allows the owner of a value t
 
 A reference, written `&value`, lets code look at (or modify) a value it does not own. When the reference goes away, nothing is dropped — the reference never owned the value, so there is nothing to clean up. The owner keeps ownership the whole time. This is why you will see `&` everywhere: passing `&params` to a function lets it read your `Params` without moving it, so you can keep using `params` afterward.
 
+Contrast this with the previous chapter, where passing an owned `String` *moved* it. Borrow instead, and the value stays yours:
+
+```rust
+fn describe(vignettes: &[String]) -> String {
+    format!("{} vignettes ready", vignettes.len())
+}
+
+fn main() {
+    let vignettes = vec!["ca_geo-030-H-REV-INFO".to_string(), "ca_geo-060-D-IRREV-NOINFO".to_string()];
+    let msg = describe(&vignettes);          // lend it out...
+    println!("{msg}");                        // 2 vignettes ready
+    println!("still mine: {} entries", vignettes.len()); // ...and it is still ours
+}
+```
+
+If `describe` took `vignettes: Vec<String>` instead, the second `println!` would be a compile error — value used after move. The `&` is the difference between lending and giving.
+
 ## Two kinds of reference, one iron rule
 
 There are exactly two kinds, and the distinction is the whole game.
 
 **Shared references (`&T`)** — read-only, and you can have as many as you like at once. The book: <cite index="0-6">a shared reference is a pointer that may be shared; any number of other references may exist to the same value, and values behind shared references are not mutable.</cite> Many readers, no writers.
+
+```rust
+fn main() {
+    let prompt = String::from("You are the duty officer.");
+    let a = &prompt;
+    let b = &prompt;
+    println!("{a} | {b} | {prompt}"); // three readers at once — no conflict
+}
+```
 
 **Mutable references (`&mut T`)** — read-write, but **exclusive**. While a `&mut` exists, nothing else may touch the value. The book: <cite index="0-8">the compiler assumes that the mutable reference is exclusive</cite> — no other reference, shared or mutable, may coexist with it.
 
@@ -24,6 +50,37 @@ Put together, this is the rule the borrow checker enforces everywhere: **either 
 <span class="callout-label">Why this rule buys so much</span>
 This single constraint is how Rust guarantees memory safety <em>and</em> data-race freedom at compile time. A data race requires two things touching the same data at once with at least one writing — which is exactly the state the rule forbids. Get the "many readers or one writer" rule into your bones and most borrow-checker errors become predictable, because you will feel the violation before the compiler names it.
 </div>
+
+## Watch the rule fire
+
+Here is the violation, in the smallest form you will actually meet — holding a reference into a `Vec` while pushing to it (a push may reallocate and move every element, which would leave `first` pointing at freed memory; the rule exists precisely to forbid this):
+
+```rust,compile_fail
+fn main() {
+    let mut log = vec!["line 1".to_string()];
+    let first = &log[0];          // shared borrow begins
+    log.push("line 2".into());    // mutable borrow while shared is alive: ERROR
+    println!("{first}");          // shared borrow still in use here
+}
+```
+
+```text
+error[E0502]: cannot borrow `log` as mutable because it is also borrowed as immutable
+```
+
+The fix is usually not `clone()` — it is *reordering*, so the shared borrow's flow ends before the mutable one begins:
+
+```rust
+fn main() {
+    let mut log = vec!["line 1".to_string()];
+    let first = &log[0];
+    println!("{first}");          // last use — the shared borrow's flow ends here
+    log.push("line 2".into());    // exclusive access is now fine
+    println!("log has {} lines", log.len());
+}
+```
+
+Same statements, different order, compiles clean. The compiler tracks flows by *last use*, not by scope braces — once `first` is used for the last time, its borrow is over.
 
 ## Back to the flows model
 
