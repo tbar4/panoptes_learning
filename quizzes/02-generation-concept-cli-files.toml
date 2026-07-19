@@ -1,0 +1,25 @@
+# clap & Writing Files Concept-Check
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "What does `#[derive(Parser)]` on a struct actually generate?"
+prompt.distractors = [
+  "A runtime reflection layer that inspects the struct while the program runs",
+  "A parser for a clap.toml configuration file",
+  "Nothing — it only validates that the struct's fields have parseable types",
+]
+answer.answer = "A complete argument parser, generated at compile time from the struct's shape — fields become flags, field types become argument types, and doc comments become the --help text"
+context = """Same mechanism as serde's derives: declare the shape, and the macro writes the machinery before the program ever runs. The struct IS the binary's interface, so an argument of the wrong type or a missing required flag is caught by generated code you never wrote."""
+id = "7c1f04b2-9d3e-4e6a-a1c8-5b2e9f60d411"
+
+[[questions]]
+type = "MultipleChoice"
+prompt.prompt = "Why is it acceptable to write the manifest CSV by hand with `format!`, without the `csv` crate?"
+prompt.distractors = [
+  "CSV is a trivial format that never needs escaping",
+  "The csv crate is unmaintained, like serde_yaml",
+  "Performance — the csv crate would be too slow for 18 rows",
+]
+answer.answer = "Every manifest field is a constrained token (enum strings, zero-padded numbers, a hex hash) that cannot contain commas or quotes — and the one field that could, the prompt text, deliberately lives in separate files"
+context = """Hand-rolled CSV is safe exactly as long as no field can contain a delimiter. The manifest's columns are all closed-vocabulary tokens, and prompts are stored as individual .txt files precisely to keep free text out of the CSV. If free text ever moves into the manifest, that is the signal to switch to the csv crate — the task plan's self-review flags this explicitly."""
+id = "e8a95c37-2f61-48db-b0a4-c96d1e7f3a82"

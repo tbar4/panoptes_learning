@@ -6,6 +6,8 @@
 
 Add the `panoptes-gen` binary: a `clap` CLI that loads a family TOML, generates vignettes, writes each prompt to `prompts/`, and writes `manifest.csv` — the join spine every later stage reads. Test the manifest writer, then run the binary end to end.
 
+Everything new here — the `clap` derive, `PathBuf` arguments, `create_dir_all`/`fs::write`, and the hand-built CSV pattern — was introduced with worked examples in the [previous chapter](./concept-cli-files.html). If any line of this build feels unfamiliar, that is the page to reread; this chapter should only be *assembly*.
+
 ## Scaffold
 
 **Create:** `crates/panoptes-gen/src/main.rs`. **Modify:** `crates/panoptes-gen/Cargo.toml` — add a `[[bin]] name = "panoptes-gen" path = "src/main.rs"` section and `tempfile = "3"` under `[dev-dependencies]` (the manifest test writes to a temp dir).

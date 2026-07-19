@@ -24,6 +24,7 @@
 - [Build: Family Spec + Validity Trait](./02-generation/build-family.md)
 - [Concept: Iterators and the Cartesian Product](./02-generation/concept-iterators.md)
 - [Build: Vignette Generation](./02-generation/build-generate.md)
+- [Concept: clap and Writing Files](./02-generation/concept-cli-files.md)
 - [Build: The Generation CLI + Manifest](./02-generation/build-cli.md)
 - [Concept-Check: Generation](./02-generation/quiz.md)
 
