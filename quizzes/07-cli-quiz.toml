@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "The `panoptes` binary uses `assert_cmd` in an integration test. What does that test actually run?"
 prompt.distractors = [
-  "The functions directly, in-process",
-  "A mock of the CLI",
-  "Only the help text",
+  "The command's functions invoked directly in-process, skipping over both the shell and the real compiled binary",
+  "A lightweight mock of the CLI that stands in for the binary while it returns canned output text back",
+  "Only the generated --help text, checking it against the flags that are declared on the clap struct",
 ]
-answer.answer = "The compiled binary as a subprocess, so it tests the real command-line behavior including argument parsing and exit codes"
+answer.answer = "The compiled binary as a subprocess, so it exercises real CLI behavior including arg parsing and exit codes"
 context = """assert_cmd invokes the built binary as an external process — the same way a user or a shell script would. That is what lets you assert on real exit codes and end-to-end behavior, not just internal function returns."""
 id = "909b2955-aa17-4bc1-92d2-7a0b9c74eb6f"
 
@@ -17,11 +17,11 @@ id = "909b2955-aa17-4bc1-92d2-7a0b9c74eb6f"
 type = "MultipleChoice"
 prompt.prompt = "Why return `ExitCode` (or `Result`) from main rather than managing exit integers by hand?"
 prompt.distractors = [
-  "It is faster",
-  "Raw integers do not work in Rust",
-  "It is required by clap",
+  "Returning a typed value from main lets the compiler optimize the process's exit path far more aggressively",
+  "Raw integer exit codes are simply not something that a Rust main function is ever actually allowed to return",
+  "clap requires that main return an ExitCode so that it can attach its own error messages onto the process exit status",
 ]
-answer.answer = "It pushes success/failure into a typed value the runtime translates to the OS exit code — the same 'correctness in types' theme, so an error becomes a non-zero exit automatically rather than by a convention you must remember"
+answer.answer = "It moves success and failure into a typed value the runtime maps to the exit code, so an Err becomes a non-zero exit"
 context = """Returning a type that carries success or failure means the process's exit status is handled by the type system, not by remembering to call a raw exit function. An Err propagating to main becomes a non-zero exit for free — honest exit codes without manual bookkeeping."""
 id = "2d8b289b-697c-49a6-9948-9efbcd78f11c"
 
@@ -29,11 +29,11 @@ id = "2d8b289b-697c-49a6-9948-9efbcd78f11c"
 type = "MultipleChoice"
 prompt.prompt = "The subcommand enum gets a `match` in the dispatch. What does the compiler guarantee about that match?"
 prompt.distractors = [
-  "Nothing special",
-  "That the subcommands run in order",
-  "That help text is generated",
+  "That the subcommand match arms are evaluated in the exact order in which they are written in the source",
+  "That clap will automatically generate the whole --help text out of the arms of the dispatch match itself",
+  "Nothing in particular; a match over the subcommands is really just ordinary control flow as far as the compiler itself can see",
 ]
-answer.answer = "Exhaustiveness: if you add a new subcommand variant and forget to handle it, the code will not compile — the same safety net enums gave codebook values, now guarding CLI dispatch"
+answer.answer = "Exhaustiveness: add a subcommand variant and forget its arm and it will not compile — the net enums gave codebook values"
 context = """Matching on an enum must cover every variant. Add a Report subcommand and forget to handle it, and the compiler stops you. Exhaustiveness turns 'I forgot a case' from a runtime surprise into a build error — the recurring theme, applied to the CLI's control flow."""
 id = "c91edaac-de01-41ea-bfdc-9beef5304256"
 

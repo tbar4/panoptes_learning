@@ -36,11 +36,11 @@ id = "5dc1e092-9a3d-41a4-81a5-a1f2168b16c1"
 type = "MultipleChoice"
 prompt.prompt = "Why does this course insist you write the failing test and predict its output *before* writing the implementation?"
 prompt.distractors = [
-  "It is a required Rust convention",
-  "It makes the code compile faster",
-  "It produces better git history",
+  "Writing the test first is a Rust language requirement that cargo test enforces on each module",
+  "Predicting the output lets the compiler skip type-checking the code you have not written yet",
+  "Seeing the test first makes rustc compile the crate faster because it caches the expected result",
 ]
-answer.answer = "The gap between your prediction and the real error is where the understanding forms"
+answer.answer = "The gap between what you predicted and the real compiler error is where the understanding forms"
 context = """
 The pedagogy is the point. A wrong prediction followed by the real compiler message teaches you what the type system is actually enforcing, far more efficiently than reading working code. Frequent commits and clean history are nice, but they are not why we predict.
 """

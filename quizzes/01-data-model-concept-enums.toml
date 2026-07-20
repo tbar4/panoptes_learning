@@ -28,11 +28,11 @@ id = "ae0c0deb-ea0e-4921-8547-e790b55f182f"
 type = "MultipleChoice"
 prompt.prompt = "A coded CSV row has `c2_logic = \"AGGRESSIVE\"`, which is not a codebook value. With `StrategicLogic` as a serde-derived enum, what happens when you load that row?"
 prompt.distractors = [
-  "It loads as a CodedRow with an invalid field you must catch later",
-  "It loads and serde logs a warning",
-  "It silently falls back to the first variant",
+  "It loads as a CodedRow whose logic field is invalid, which you must then remember to catch somewhere further downstream",
+  "It loads normally and serde emits a warning to stderr about the unrecognized codebook value it saw",
+  "It deserializes to the first variant, Control, because serde falls back to the default on no match",
 ]
-answer.answer = "It fails to deserialize — the row never becomes a valid CodedRow"
+answer.answer = "It fails to deserialize at load time, so that particular row simply never becomes a valid CodedRow at all"
 context = """
 serde matches the string against the enum's variants; a non-matching string is a deserialization error. The row does not become a CodedRow at all. The validation is the parse — there is no invalid-but-constructed state to catch downstream.
 """
@@ -54,11 +54,11 @@ id = "b51537b4-1fba-4260-817d-c75719c42177"
 type = "MultipleChoice"
 prompt.prompt = "How does the enum relate to the thesis's 'rubric validity is the primary risk' concern?"
 prompt.distractors = [
-  "It makes the criteria themselves doctrinally defensible",
-  "It replaces the need for inter-rater reliability",
-  "It has no connection to the thesis",
+  "It makes the coding criteria themselves doctrinally defensible, which is precisely the validity concern the thesis actually raises",
+  "It removes the need for inter-rater reliability, since perfectly conforming data cannot ever be coded inconsistently",
+  "It addresses rubric validity head-on by proving that each criterion actually measures what the thesis says it does",
 ]
-answer.answer = "It guarantees recorded data conforms exactly to the defined codebook with zero drift — one fewer thing a committee can challenge, though it does not validate the criteria themselves"
+answer.answer = "It keeps recorded values conforming exactly to the codebook — one thing fewer to challenge, though not a check on the criteria"
 context = """
 The enum handles data conformance, not criterion quality. Doctrinal grounding and inter-rater reliability make the criteria defensible; the enum ensures the coded values never drift from the frozen codebook. Different problems, both necessary.
 """

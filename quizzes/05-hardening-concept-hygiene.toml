@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "Why keep Stages 5–6 (inter-rater reliability, analysis) in Python rather than extending the Rust harness?"
 prompt.distractors = [
-  "Rust cannot do math",
-  "Python is faster",
-  "The team only knows Python",
+  "Rust simply cannot perform the kind of floating-point arithmetic that these particular reliability statistics fundamentally depend on right here",
+  "Python executes these reliability calculations considerably faster than compiled Rust would on the very same data",
+  "Only Python is available to the team, so the whole reliability stage has to be written in that one language anyway",
 ]
-answer.answer = "The stats ecosystem for kappa/Krippendorff's alpha is mature and correct in Python and thin in Rust; reimplementing it by hand would add subtle correctness risk to the instrument you are trying to make defensible"
+answer.answer = "The kappa and Krippendorff's-alpha libraries are mature in Python but thin in Rust, and hand-porting them adds subtle correctness risk"
 context = """It is a rigor argument. The reliability statistics are load-bearing for the thesis; using correct, maintained implementations beats hand-rolling them in Rust. Right tool per stage, boundary drawn at the file contract."""
 id = "4fb80de8-dc58-487f-a142-56798ef9f521"
 
@@ -17,10 +17,10 @@ id = "4fb80de8-dc58-487f-a142-56798ef9f521"
 type = "MultipleChoice"
 prompt.prompt = "What does 'the interface is the file, not a language binding' enable?"
 prompt.distractors = [
-  "Faster compilation",
-  "Automatic type sharing between Rust and Python",
-  "Running Python inside Rust",
+  "The Rust and Python sides now both automatically come to share the very same struct definitions directly across the crate boundary",
+  "Ordinary Python code can be embedded and then executed directly inside the Rust harness at run time itself",
+  "The whole pipeline now compiles faster because the shared file format removes a cross-language dependency",
 ]
-answer.answer = "A typed Rust harness and a pandas notebook coexist with zero friction, because each side only depends on the JSONL/CSV schema — the same fungibility argument as the data model, applied to the whole pipeline"
+answer.answer = "A typed Rust harness and a pandas notebook coexist because each depends only on the JSONL/CSV schema, not the other's language"
 context = """Because both sides agree only on the file schema, neither depends on the other's implementation language. Rust writes the files; Python reads them. You could replace either side without touching the other. Boundaries at data, not code."""
 id = "ab91d37d-b8b8-4e1d-9082-ccfcc149bb12"

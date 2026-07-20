@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "Mechanically, what does `#[derive(Serialize)]` do to your struct?"
 prompt.distractors = [
-  "It inspects the struct's fields at runtime each time you serialize",
-  "It stores a schema in a registry that serde consults later",
-  "It marks the struct so the JSON library knows to accept it",
+  "It reads the struct's fields at runtime on each call and builds the output by reflection",
+  "It records the struct's schema in a global registry that serde then looks up when serializing",
+  "It attaches a marker so the chosen format crate will accept the struct as serializable",
 ]
-answer.answer = "It generates Rust source code (an impl of the Serialize trait) at compile time, based on the struct's fields"
+answer.answer = "It generates an impl of the Serialize trait at compile time, built from the struct's fields"
 context = """A derive macro is a compile-time code generator. It reads the struct's shape and emits an actual trait implementation that is compiled alongside your code. No runtime reflection, no registry — the conversion code exists before the program runs."""
 id = "4a6c198a-943d-4d15-923c-d0c65a1048a3"
 
@@ -17,11 +17,11 @@ id = "4a6c198a-943d-4d15-923c-d0c65a1048a3"
 type = "MultipleChoice"
 prompt.prompt = "The course keeps repeating a theme about serde. What is it?"
 prompt.distractors = [
-  "serde makes serialization faster than Python",
-  "serde requires less code than writing converters by hand",
-  "serde works with any data format",
+  "serde serializes data faster than the equivalent hand-written Python converters do",
+  "serde needs far less code than writing all the conversion functions out by hand",
+  "serde can target essentially any data format, which a hand-rolled converter cannot",
 ]
-answer.answer = "serde moves a class of errors from runtime to compile time"
+answer.answer = "serde shifts an entire class of potential errors from runtime out to compile time"
 context = """Speed and brevity are real but incidental. The load-bearing point is that compile-time code generation lets the compiler catch serialization problems when you build, not when a write fails mid-run. For a reproducibility-critical instrument, that is the whole argument."""
 id = "aecaa939-e02d-4f0d-950a-3adc9c100191"
 
@@ -29,11 +29,11 @@ id = "aecaa939-e02d-4f0d-950a-3adc9c100191"
 type = "MultipleChoice"
 prompt.prompt = "You have used `#[derive(Debug)]` before. How does it relate to `#[derive(Serialize)]`?"
 prompt.distractors = [
-  "They are unrelated — one is built in, one is a library",
-  "Debug works at runtime, Serialize works at compile time",
-  "Serialize is a superset of Debug",
+  "They are unrelated: Debug is built into the language while Serialize is provided by a separate external library crate",
+  "Debug does its formatting at runtime, whereas Serialize generates all of its conversion code at compile time",
+  "Serialize is a strict superset of Debug that also emits the same formatting output that Debug itself produces",
 ]
-answer.answer = "They are the same mechanism: a derive macro that reads your type and generates code (formatting code vs. serialization code)"
+answer.answer = "Both are the same mechanism — a derive macro that reads your type and emits code, whether formatting or conversion"
 context = """Both are derive macros — compile-time code generators that read your type's fields and emit an implementation. `Debug` emits formatting code; `Serialize` emits conversion code. Recognizing they are the same mechanism is the point: derive is not magic, it is codegen."""
 id = "03ea5f1b-fbac-4461-a16e-a27b7f5f6284"
 
@@ -41,11 +41,11 @@ id = "03ea5f1b-fbac-4461-a16e-a27b7f5f6284"
 type = "MultipleChoice"
 prompt.prompt = "Why does this arc come first, before generation, async, or coding?"
 prompt.distractors = [
-  "Because data types are the easiest topic",
-  "Because serde must be imported before other crates",
-  "Because the file contract has to exist before any code runs",
+  "Because data types are the simplest topic here, making a gentle warm-up before the genuinely hard later arcs",
+  "Because serde must be imported and initialized before any other crate in the workspace will begin to compile",
+  "Because the file contract has to physically exist on disk before any generation or coding code can start running",
 ]
-answer.answer = "Because the enum-as-validation payoff — the reason the harness is worth building in Rust — is just serde derive applied to an enum, so everything downstream depends on understanding it"
+answer.answer = "Because the enum-as-validation payoff is just serde derive applied to an enum, which every later arc depends on"
 context = """The 'parse is validation' property that makes a coder unable to record an off-codebook value is serde derive pointed at an enum. It is the foundation the later arcs assume, which is why we go slow here rather than treating it as setup."""
 id = "ae8c4bf9-5451-495e-b02c-c5c814a8044a"
 

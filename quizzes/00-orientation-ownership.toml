@@ -50,11 +50,11 @@ id = "f311667d-72b1-4fa8-b8fd-20a965dd804b"
 type = "MultipleChoice"
 prompt.prompt = "How does 'every value has exactly one owner' relate to Rust having no garbage collector?"
 prompt.distractors = [
-  "It does not — they are separate features",
-  "The garbage collector uses ownership to decide what to free",
-  "Ownership makes GC faster",
+  "Rust does run a small garbage collector, but ownership lets it skip any value that still has one live owner",
+  "Ownership and the lack of a collector are unrelated; the compiler frees memory by reference-counting every value behind the scenes at run time",
+  "The compiler frees a value the instant its owner is reassigned, so cleanup timing is decided by runtime bookkeeping",
 ]
-answer.answer = "Because ownership is unique, the compiler knows exactly when each value's owner goes out of scope, so it can insert the cleanup (drop) at compile time — no runtime collector needed"
+answer.answer = "Unique ownership tells the compiler when an owner leaves scope, so it inserts the drop at build time, not via a runtime collector"
 context = """
 Single ownership means the moment of cleanup is statically determined: when the owner's scope ends, the value drops. The compiler inserts that drop for you at build time. No runtime GC has to trace and decide — the ownership rules already answer 'when is this freed?' deterministically.
 """

@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "What does wiremock provide in a test?"
 prompt.distractors = [
-  "A mocked function that replaces reqwest",
-  "A way to skip the network entirely by stubbing the client",
-  "A recording of past API responses",
+  "A mock object that transparently replaces reqwest so that no network socket is ever actually opened",
+  "A way to bypass the network entirely by stubbing out the client's own request method directly in code",
+  "A stored recording of earlier real API responses that it simply replays back to you during every test run",
 ]
-answer.answer = "A real local HTTP server on a random port that returns canned responses you define, which your client hits over genuine HTTP"
+answer.answer = "A real local HTTP server on a random port that returns canned responses you define, hit over real HTTP"
 context = """wiremock starts an actual HTTP server locally. Your client makes a real request to it; the server returns what you configured. The client cannot distinguish it from the real API, so you test the true request/response path without spending or flaking."""
 id = "861e8b9c-9777-42d5-9462-37865162b82b"
 
@@ -17,10 +17,10 @@ id = "861e8b9c-9777-42d5-9462-37865162b82b"
 type = "MultipleChoice"
 prompt.prompt = "Why does mock-testing push you to make the client's base URL a parameter?"
 prompt.distractors = [
-  "It is required by wiremock's API",
-  "To hard-code the URL more safely",
-  "It has nothing to do with the base URL",
+  "Because wiremock's own API simply refuses to start up unless the client's base URL is supplied to it as a parameter",
+  "So the production URL can then be hard-coded far more safely, once a test has confirmed the client works",
+  "It has nothing to do with the base URL; the parameter exists only to keep the constructor's own signature uniform",
 ]
-answer.answer = "So the test can point the client at the mock's URL — and that same injectability lets production point at a proxy or inference gateway, so testable and flexible turn out to be the same design"
+answer.answer = "So the test can aim the client at the mock's URL — and the same injectable seam lets production point at a gateway"
 context = """To test against a local mock, the client must accept where to send requests. That seam is also how you would route through a gateway in production. The test surfaces a design improvement — a recurring pattern where testable code is also better-factored code."""
 id = "8375bab5-5585-4e12-a7f0-0190aac05704"

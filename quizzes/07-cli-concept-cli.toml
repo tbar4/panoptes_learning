@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "Why does correctly reporting a non-zero exit code on failure matter?"
 prompt.distractors = [
-  "It makes the program run faster",
-  "It is required for the program to compile",
-  "It only matters for logging",
+  "A non-zero exit code is precisely what makes the operating system run the program faster the next time around",
+  "The program simply will not compile at all unless main explicitly returns an exit code on every single path",
+  "Exit codes matter only for logging, since nothing in the shell or in CI ever inspects the status afterward anyway",
 ]
-answer.answer = "Exit codes let programs compose: in `a && b`, b runs only if a succeeded, so an honestly-reported failure stops the chain instead of letting a broken result flow downstream"
+answer.answer = "Exit codes let programs compose: in `a && b`, b runs only if a succeeded, so a reported failure stops the chain"
 context = """A well-behaved CLI reports success (0) or failure (non-zero) to the OS. That status is what shell operators like && and CI pipelines check. If a program fails but reports success, downstream steps run on bad data. Composability depends on honest exit codes."""
 id = "98cbed14-a751-4274-99c6-c397913bbbb9"
 
@@ -17,11 +17,11 @@ id = "98cbed14-a751-4274-99c6-c397913bbbb9"
 type = "MultipleChoice"
 prompt.prompt = "How does `panoptes code` exiting non-zero on an off-codebook value connect to the rest of the course?"
 prompt.distractors = [
-  "It does not — exit codes are unrelated to validation",
-  "It makes coding faster",
-  "It replaces the need for the codebook",
+  "It does not really connect at all; a process's exit code is entirely unrelated to the codebook validation itself",
+  "It mainly makes the coding stage run faster by rejecting the bad rows before they even reach the parser stage",
+  "It removes the need for the codebook entirely, since a single non-zero exit code already signals exactly which rows were invalid",
 ]
-answer.answer = "It is the final form of enums-as-validation: an invalid coded value fails to parse, becomes a process failure, and that failure stops a pipeline like `panoptes code --coded x.csv && run-analysis`"
+answer.answer = "It is enums-as-validation's final form: a bad coded value fails to parse, becomes a process failure, and stops the pipeline"
 context = """The chain completes: the enum rejects the bad value at parse time, the CLI turns that into a non-zero exit, and the exit code stops downstream analysis. The Part II type property becomes an operational gate — invalid data cannot reach analysis because the process fails first."""
 id = "d3ec1e18-2703-4bd8-a34c-3bd5185f6ce3"
 
@@ -29,10 +29,10 @@ id = "d3ec1e18-2703-4bd8-a34c-3bd5185f6ce3"
 type = "MultipleChoice"
 prompt.prompt = "Why model CLI subcommands (generate/run/code) as an enum?"
 prompt.distractors = [
-  "Enums are faster than structs",
-  "clap only accepts enums",
-  "To avoid writing three binaries",
+  "Because clap will only ever accept the subcommands when each one of them is declared as a variant of a single enum type",
+  "Because an enum dispatches between the subcommands measurably faster than any struct-based design would do",
+  "So that the three stages can share a single binary rather than being built as three separate executables",
 ]
-answer.answer = "Each subcommand is one variant of a closed set, matching the enum-as-closed-set idea from Part II; the parser dispatches on which variant it parsed and you match to run the right stage"
+answer.answer = "Each subcommand is one variant of a closed set (the Part II idea), and a match on the parsed variant runs the stage"
 context = """Subcommands are a fixed, closed set of verbs — exactly what an enum models. clap parses the arguments into the matching variant, and a match expression routes to the right stage. It is the same closed-set discipline you used for codebook values, applied to the CLI's shape."""
 id = "e647515e-ea19-4b14-9f8a-df85865bfcfe"

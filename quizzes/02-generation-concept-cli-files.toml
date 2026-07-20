@@ -4,11 +4,11 @@
 type = "MultipleChoice"
 prompt.prompt = "What does `#[derive(Parser)]` on a struct actually generate?"
 prompt.distractors = [
-  "A runtime reflection layer that inspects the struct while the program runs",
-  "A parser for a clap.toml configuration file",
-  "Nothing — it only validates that the struct's fields have parseable types",
+  "A runtime reflection layer that walks over the struct's fields on each invocation while the program itself is actually running",
+  "A loader that reads command-line flags out of a clap.toml config file placed next to the compiled binary on disk",
+  "Only a compile-time check confirming that every one of the fields has a type clap already knows how to parse from text",
 ]
-answer.answer = "A complete argument parser, generated at compile time from the struct's shape — fields become flags, field types become argument types, and doc comments become the --help text"
+answer.answer = "A full argument parser built at compile time from the struct — fields become flags, types become arg types, docs the --help"
 context = """Same mechanism as serde's derives: declare the shape, and the macro writes the machinery before the program ever runs. The struct IS the binary's interface, so an argument of the wrong type or a missing required flag is caught by generated code you never wrote."""
 id = "7c1f04b2-9d3e-4e6a-a1c8-5b2e9f60d411"
 
@@ -16,10 +16,10 @@ id = "7c1f04b2-9d3e-4e6a-a1c8-5b2e9f60d411"
 type = "MultipleChoice"
 prompt.prompt = "Why is it acceptable to write the manifest CSV by hand with `format!`, without the `csv` crate?"
 prompt.distractors = [
-  "CSV is a trivial format that never needs escaping",
-  "The csv crate is unmaintained, like serde_yaml",
-  "Performance — the csv crate would be too slow for 18 rows",
+  "CSV is a simple enough format that correctly formatted rows never require any quoting or escaping whatsoever in practice",
+  "The csv crate is effectively unmaintained now, the same reason the course dropped serde_yaml from the workspace entirely",
+  "The csv crate adds far too much overhead to justify ever pulling it in for a manifest that is only eighteen short rows long in total",
 ]
-answer.answer = "Every manifest field is a constrained token (enum strings, zero-padded numbers, a hex hash) that cannot contain commas or quotes — and the one field that could, the prompt text, deliberately lives in separate files"
+answer.answer = "Each field is a constrained token — enum strings, padded numbers, a hash — no commas or quotes, and prompts live in separate files"
 context = """Hand-rolled CSV is safe exactly as long as no field can contain a delimiter. The manifest's columns are all closed-vocabulary tokens, and prompts are stored as individual .txt files precisely to keep free text out of the CSV. If free text ever moves into the manifest, that is the signal to switch to the csv crate — the task plan's self-review flags this explicitly."""
 id = "e8a95c37-2f61-48db-b0a4-c96d1e7f3a82"

@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "Why is blinding enforced by the data structure (a BlankSheetRow with no model field) rather than by the coder choosing not to look?"
 prompt.distractors = [
-  "It is faster",
-  "serde requires it",
-  "So the file is smaller",
+  "Because reading a struct that has fewer fields is measurably faster than skipping over fields at runtime",
+  "Because serde will refuse to deserialize a coding sheet that still carries a populated model field on it",
+  "Because dropping the model field makes each individual row smaller, so the whole sheet file loads noticeably quicker",
 ]
-answer.answer = "Disciplines fail; making the sheet a type that simply has no field for model or parameters means identity cannot leak regardless of what the coder remembers"
+answer.answer = "Disciplines slip; a sheet type with no field for model or parameters cannot leak identity whatever the coder recalls"
 context = """The same philosophy as enums-as-validation: put the correctness property in the type. A sheet with no model field cannot leak the model, period. 'Just don't look' is a discipline that can slip; a missing field cannot be looked at."""
 id = "0a524181-f3b7-4454-bf7e-a504f718e754"
 
@@ -17,11 +17,11 @@ id = "0a524181-f3b7-4454-bf7e-a504f718e754"
 type = "MultipleChoice"
 prompt.prompt = "Why is the coding-sheet shuffle deterministic (seeded) rather than truly random?"
 prompt.distractors = [
-  "True randomness is impossible in Rust",
-  "Deterministic shuffles are faster",
-  "To make the sheet sortable",
+  "Because a genuinely random shuffle is impossible to produce anywhere within safe Rust code",
+  "Because a seeded shuffle sorts the rows faster than drawing bytes from a real entropy source",
+  "So the coding sheet comes out sorted, which makes locating any given row much easier afterward",
 ]
-answer.answer = "So the ordering breaks model/parameter grouping (blinding) while remaining reproducible for the record"
+answer.answer = "So the ordering breaks up model and parameter grouping for blinding while staying reproducible"
 context = """You need two things: break the grouping that would leak identity, and be able to reproduce exactly what the coder saw. A seeded shuffle does both — random-looking order, but regenerable from the seed for the archive."""
 id = "15483e43-d7d2-47c1-8545-7828fe83ddeb"
 
@@ -29,10 +29,10 @@ id = "15483e43-d7d2-47c1-8545-7828fe83ddeb"
 type = "MultipleChoice"
 prompt.prompt = "Why is blinding a sharper concern for this thesis than for a typical content-analysis study?"
 prompt.distractors = [
-  "It is not — blinding matters equally everywhere",
-  "Because the responses are long",
-  "Because there are many models",
+  "Because the model responses tend to be unusually long, so a coder is much more likely to spot identifying cues buried somewhere in them",
+  "Because a great many different models are involved, which multiplies the chances of an accidental unblinding",
+  "It is not actually sharper here; blinding is an equally strong requirement in every content-analysis study",
 ]
-answer.answer = "The builder and the coder are the same person with hypotheses about the models, so unblinded coding invites the charge that codes reflect expectations rather than responses"
+answer.answer = "The builder and coder are the same person with priors about the models, so unblinded coding suggests codes reflect expectations"
 context = """When the analyst has strong priors about the subjects and also scores them, unblinded coding is a real validity threat a committee will probe. Structural blinding is the defense: the coder physically cannot see which model produced a response while scoring it."""
 id = "f960dda7-b660-4e84-ad8b-2302f6bd5600"

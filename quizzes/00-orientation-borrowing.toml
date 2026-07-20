@@ -52,11 +52,11 @@ id = "539fda26-5444-4be4-b464-62c6fe35f29f"
 type = "MultipleChoice"
 prompt.prompt = "What is the borrow checker's core rule about references to a single value?"
 prompt.distractors = [
-  "You may have at most one reference of any kind",
-  "You may have any number of mutable references as long as they do not write simultaneously",
-  "References must always be mutable",
+  "You may hold as many mutable (&mut) references as you like, so long as no two of them ever write at the very same instant",
+  "You may hold one shared (&) reference plus one mutable (&mut) reference, but never two of the very same kind",
+  "You may hold references of either kind freely, since the checker only ever rejects ones that outlive the value",
 ]
-answer.answer = "You may have any number of shared (&) references, OR exactly one mutable (&mut) reference, but never both at once"
+answer.answer = "You may hold many shared (&) references at once, or one mutable (&mut) reference, but never both kinds together"
 context = """
 Many readers or one writer, never both. Shared references are read-only and unlimited; a mutable reference is read-write and exclusive. This is the rule that makes data races impossible at compile time, because a race needs concurrent access with a writer — exactly what is forbidden.
 """
@@ -67,11 +67,11 @@ id = "bd138c41-2620-476f-ab39-b6e89608f66a"
 type = "MultipleChoice"
 prompt.prompt = "You pass `&params` (a shared reference) to a function. After the call returns, what can you do with `params`?"
 prompt.distractors = [
-  "Nothing — it was moved into the function",
-  "Only read it, never modify it again",
-  "Only use it if the function did not modify it",
+  "Nothing usable — passing `&params` still moves the value in and permanently ends your ownership of it",
+  "Read it freely but never mutate it again, since taking a shared borrow permanently froze the value",
+  "Use it only if the function did not read it, since reading through `&` consumes the borrow you gave",
 ]
-answer.answer = "Use it normally — the function only borrowed it, so ownership never left you"
+answer.answer = "Use it just as before — a shared borrow never moves it, so ownership stayed with you throughout"
 context = """
 A shared reference borrows without moving. The function reads params through the reference; ownership stays with you the whole time. When the call returns, the borrow ends and you have full use of params again. This is why so many signatures take & — it lets callers keep their values.
 """

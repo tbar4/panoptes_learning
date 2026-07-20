@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "Why does validity logic (which parameter combinations are meaningful) live in Rust code rather than in the family TOML?"
 prompt.distractors = [
-  "TOML cannot express boolean logic",
-  "It runs faster in Rust",
-  "serde cannot parse rules",
+  "Because TOML syntax simply cannot express the boolean logic that combining these validity rules requires",
+  "Because evaluating the rules in compiled Rust runs measurably faster than parsing them out of TOML does",
+  "Because serde is unable to parse conditional rules out of a TOML file into usable Rust values at all",
 ]
-answer.answer = "So the compiler checks it and a malformed rule is a compile error, not a runtime surprise — appropriate for a reproducible instrument"
+answer.answer = "So the compiler checks it and a malformed rule becomes a compile error, not a runtime surprise"
 context = """Config-as-logic is untyped, unchecked, and evaluated late. Putting the rules in typed code means they are scrutinized like any other code and fail at build time. For an instrument whose scenario set must be defensible, verifiable rules beat flexible-but-unchecked ones."""
 id = "f1fb85bb-03c6-4776-9e3b-3e81708d6b39"
 
@@ -17,10 +17,10 @@ id = "f1fb85bb-03c6-4776-9e3b-3e81708d6b39"
 type = "MultipleChoice"
 prompt.prompt = "What is the primary thing a trait gives you here?"
 prompt.distractors = [
-  "Faster compilation",
-  "Automatic serialization",
-  "A way to avoid enums",
+  "A guarantee that every ScenarioFamily implementation serializes to the exact same on-disk representation",
+  "Faster compilation, because the compiler shares a single code path across every family type at once",
+  "A convenient way to avoid defining any enums for the closed set of scenario families altogether",
 ]
-answer.answer = "The ability to write code that works with any family type through a shared interface, without knowing the concrete type"
+answer.answer = "The ability to write generation code that works with any family type through a shared interface"
 context = """A trait is an interface: it lets generation code call name() and is_valid() on any ScenarioFamily, present or future, uniformly. That is polymorphism over behavior, which a per-type function cannot give you."""
 id = "22918136-6f66-451e-a61d-d33ef1cd4f4d"

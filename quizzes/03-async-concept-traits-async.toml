@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "Why annotate the ModelClient trait with `#[async_trait]`?"
 prompt.distractors = [
-  "It makes the trait faster",
-  "It is required for all traits",
-  "It adds serialization",
+  "It schedules every async method onto its own separate tokio task, so that callers never have to `.await` any of them",
+  "It is mandatory for any `async fn` whatsoever, whether it happens to live in a trait or in a plain `impl` block somewhere",
+  "It forces the runtime to poll all of the trait's methods eagerly up front rather than lazily at each `.await` call",
 ]
-answer.answer = "It rewrites async trait methods into a form that works with dynamic dispatch (Box<dyn ModelClient>), which the ergonomic path requires"
+answer.answer = "It desugars each async method into one that returns a boxed future, so the trait stays usable behind `dyn`/`Box`"
 context = """async_trait desugars async methods in traits into a boxed-future form compatible with dyn dispatch. Without it, an async trait used behind Box<dyn ...> is awkward or unavailable depending on your toolchain. It lets you write async methods naturally."""
 id = "398e02db-2d8a-4234-8c10-abd388d14549"
 
@@ -17,10 +17,10 @@ id = "398e02db-2d8a-4234-8c10-abd388d14549"
 type = "MultipleChoice"
 prompt.prompt = "Why do boxed clients often need `ModelClient: Send + Sync`?"
 prompt.distractors = [
-  "To serialize them",
-  "To make them clonable",
-  "Send and Sync are only for testing",
+  "Because serializing a boxed client out to a file as JSON first requires that the client be both Send and Sync",
+  "Because Send and Sync are precisely what make a boxed trait object cloneable across an await point later on",
+  "Because Send and Sync are only ever needed to satisfy the test harness, never during an actual production run",
 ]
-answer.answer = "Because the multi-threaded runtime may move futures between threads, so the clients inside must be safe to send and share across threads"
+answer.answer = "Because the runtime may move a future across threads, so the client inside must be safe to send and share"
 context = """Send means safe to move to another thread; Sync means safe to share by reference across threads. tokio's multi-threaded runtime can relocate work, so the values captured must satisfy these bounds. You rarely implement them (they are automatic) but you do require them."""
 id = "5ac27c57-1638-44ee-b05f-c76d6480ea5f"

@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "The manifest.csv is described as 'the join spine'. What does that mean for Stage 5 analysis?"
 prompt.distractors = [
-  "Analysis must re-parse every prompt file",
-  "The manifest replaces the response log",
-  "It is only for human reference",
+  "Analysis must re-parse each prompt .txt file to recover the parameters sitting behind every response",
+  "The manifest entirely takes the place of the response log, so Stage 5 then reads the parameters and the outputs together",
+  "It exists only for human reference and plays no real part in how the Stage 5 join is actually computed",
 ]
-answer.answer = "Because the manifest maps vignette_id to parameters, analysis joins responses to parameters in one step instead of reconstructing them"
+answer.answer = "Because it maps vignette_id to parameters, analysis joins responses to parameters in one step, not rebuilding them"
 context = """The manifest is the single place parameters live keyed by vignette_id. Analysis joins the response log to the manifest on that key — 'escalation vs attribution confidence' becomes a one-line join. Without it, you would be reverse-engineering parameters from IDs or prompts."""
 id = "9c212ba6-1a55-44c5-b7be-db3d98360e09"
 
@@ -17,10 +17,10 @@ id = "9c212ba6-1a55-44c5-b7be-db3d98360e09"
 type = "MultipleChoice"
 prompt.prompt = "Why does the same `#[derive(Deserialize)]` handle both the TOML family spec and JSON records?"
 prompt.distractors = [
-  "serde has separate derives per format that happen to look the same",
-  "TOML and JSON are the same format",
-  "The derive only works for TOML and JSON is special-cased",
+  "serde ships a separate derive for each format, and the TOML and JSON ones just happen to look identical",
+  "TOML and JSON are structurally the very same format, so one derive naturally ends up covering both of them",
+  "The derive only ever targets TOML, and the JSON records are actually handled by a separate special-cased path",
 ]
-answer.answer = "serde is format-agnostic: the derive describes the type's shape, and a format crate (toml, serde_json) handles the encoding"
+answer.answer = "serde is format-agnostic — the derive describes the type's shape, a format crate handles the encoding"
 context = """serde separates the data model (your derived types) from the format (the format crate). One derive, many formats. This is why moving between TOML config and JSON logs costs you nothing."""
 id = "61586956-98b9-4eec-aa06-ed06d25e111f"

@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "You write `client.generate(prompt);` without `.await`. What happens?"
 prompt.distractors = [
-  "The request is made synchronously",
-  "It runs on a background thread automatically",
-  "It is a compile error that stops the build",
+  "The request is sent synchronously, blocking the current thread until the model's response comes back",
+  "The call is automatically spawned onto a background thread and quietly runs to completion on its own",
+  "It fails to compile, since an async fn may only ever be called from within an .await expression somewhere itself",
 ]
-answer.answer = "A future is created and immediately discarded — no request is made — and the compiler warns about the unused future"
+answer.answer = "A future is built and then dropped unused, so no request is sent, and the compiler warns about the unused value"
 context = """An async fn returns a future that does nothing until driven by .await. Dropping it without awaiting discards the work. The compiler warns (unused must-use), which is why the workspace denies unused_must_use — to turn that easy mistake into a hard error."""
 id = "7b98fa33-203f-4dc8-bb1f-afd484f5fed7"
 
@@ -17,11 +17,11 @@ id = "7b98fa33-203f-4dc8-bb1f-afd484f5fed7"
 type = "MultipleChoice"
 prompt.prompt = "What is the async runtime (tokio) responsible for?"
 prompt.distractors = [
-  "Compiling async functions",
-  "Converting async to synchronous code",
-  "Making HTTP requests directly",
+  "Compiling each async function down into a state machine at the time the crate is built by rustc",
+  "Rewriting all of the async code into ordinary synchronous code just before the program starts running",
+  "Issuing every one of the HTTP requests itself, so that the futures never have to touch the network layer directly at all",
 ]
-answer.answer = "Polling futures, parking those that are waiting on I/O, and waking them when ready — the scheduler that actually drives async work"
+answer.answer = "Polling futures, parking the ones blocked on I/O, and waking them when ready — the scheduler that drives async work"
 context = """Futures are inert; something must drive them. The runtime is that scheduler. Rust has no built-in runtime, so tokio provides it, and #[tokio::main] wires it up for your top-level async main."""
 id = "26991cf3-9ff6-4a46-a2f3-5738e0fea371"
 
@@ -29,10 +29,10 @@ id = "26991cf3-9ff6-4a46-a2f3-5738e0fea371"
 type = "MultipleChoice"
 prompt.prompt = "The async arc says most borrow-checker fights here are 'ownership problems in disguise'. What is the practical implication when you hit an intimidating async error?"
 prompt.distractors = [
-  "Rewrite the code without async",
-  "Add more .await calls",
-  "Switch to a different runtime",
+  "Rewrite the whole routine without async entirely, since these lifetime errors rarely ever show up in ordinary synchronous code",
+  "Add several more .await points, because most such errors come from futures that were never driven forward",
+  "Switch to a single-threaded runtime, since the Send and Sync bounds are usually what trigger these errors",
 ]
-answer.answer = "Read the error as an ownership question — what owns this value, and how long must this borrow live — because the fix is usually there, in the flows-and-moves model from Part I"
+answer.answer = "Read it as an ownership question — what owns this, how long must the borrow live — since the fix is in the Part I model"
 context = """The genuinely new pieces are futures, await, and the runtime. But the errors that stall people are usually ownership and lifetime issues around values moved into futures — exactly the model the Foundations arc built. Reframing the scary error as 'what owns this, how long does this borrow live' is the move that unsticks it."""
 id = "8f0cb536-e712-4d4e-9353-7e3dd9a59347"

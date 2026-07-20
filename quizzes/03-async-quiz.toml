@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "Across the async arc, what is the single most common mistake the workspace lint (deny unused_must_use) is designed to catch?"
 prompt.distractors = [
-  "Forgetting a semicolon",
-  "Using the wrong integer type",
-  "Missing a derive",
+  "Leaving off a trailing semicolon, which turns an expression into a statement in an unexpected way",
+  "Reaching for the wrong integer type, such as an i32 where a u64 was the type actually required here",
+  "Forgetting a needed derive on a struct, so that some later trait bound fails to be satisfied at all",
 ]
-answer.answer = "Creating a future by calling an async fn but forgetting to .await it, silently discarding the work"
+answer.answer = "Calling an async fn to build a future but forgetting to .await it, so the work is silently dropped"
 context = """An un-awaited future does nothing. It is an easy and invisible bug — the request simply never happens. Denying unused_must_use turns that warning into a build error, so the mistake cannot ship."""
 id = "b64d5c8d-5d70-4016-85a7-cd3959fda50e"
 
@@ -17,11 +17,11 @@ id = "b64d5c8d-5d70-4016-85a7-cd3959fda50e"
 type = "MultipleChoice"
 prompt.prompt = "The response_id is a hash of (vignette_id, model, epoch) rather than a readable string. Why?"
 prompt.distractors = [
-  "Hashes are shorter",
-  "Hashing is required by JSONL",
-  "To make ids unique, which a readable string could not do",
+  "Because a hash is shorter than a readable id, which keeps the JSONL response log more compact on disk",
+  "Because JSONL requires every record's id field to be a fixed-width hexadecimal hash value just like this",
+  "Because only a hash can guarantee ids are unique, which a readable composite string could not manage to do",
 ]
-answer.answer = "So a coder looking at a coding sheet cannot read the model or parameters off the id — preserving blinding, which matters because the builder is also a coder"
+answer.answer = "So a coder reading a coding sheet cannot recover the model or parameters from the id, preserving blinding"
 context = """A readable id like 'ca_geo-030-claude-x-0' would leak the model and parameters onto the coding sheet, breaking blinding. The hash keeps the id deterministic (reproducible) but opaque (reveals nothing). Uniqueness could be achieved either way; opacity is the reason."""
 id = "2a23d314-0f1e-44e7-b6a3-643ebb19a863"
 
@@ -29,11 +29,11 @@ id = "2a23d314-0f1e-44e7-b6a3-643ebb19a863"
 type = "MultipleChoice"
 prompt.prompt = "Why can the Anthropic client be tested with zero API spend and full determinism?"
 prompt.distractors = [
-  "The test skips the network by stubbing reqwest",
-  "The API is free in test mode",
-  "Tests cache real responses",
+  "The test bypasses the network entirely by swapping out reqwest for a purely in-process stub client object",
+  "Anthropic's API is billed as completely free whenever a request arrives while the code is running in test mode",
+  "The test suite caches genuine responses from an earlier real run and then simply replays them back to the client each time",
 ]
-answer.answer = "wiremock provides a real local server returning canned responses, and the client's injectable base_url points at it instead of the real API"
+answer.answer = "wiremock runs a real local server with canned responses, and the client's base_url is aimed at it, not the real API"
 context = """The client makes a genuine HTTP request to a local wiremock server that returns exactly what the test configured. Real request path, controlled response, no key, no cost, no flakiness — enabled by the base_url seam the test forced."""
 id = "63b8d187-066d-42a7-b075-004097b5e79a"
 

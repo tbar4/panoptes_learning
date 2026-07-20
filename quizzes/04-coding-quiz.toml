@@ -5,11 +5,11 @@
 type = "MultipleChoice"
 prompt.prompt = "In the coded-CSV loader, where does a row with `c2_logic = \"AGGRESSIVE\"` actually fail?"
 prompt.distractors = [
-  "In check_anchors, because the quote is empty",
-  "It does not fail; it loads with a default",
-  "At compile time",
+  "Inside check_anchors, which flags this particular row because its accompanying quote field comes back completely empty",
+  "It does not actually fail at all; the row loads with the default StrategicLogic variant filled in for it",
+  "At compile time, since the invalid coded string is caught while the coder crate itself is being built",
 ]
-answer.answer = "In load_coded's deserialization — the string does not match any StrategicLogic variant, so the row never becomes a CodedRow"
+answer.answer = "In load_coded's deserialization: the string matches no StrategicLogic variant, so it never becomes a CodedRow"
 context = """The enum's serde deserialization rejects the unknown string. The failure is in the parse (load_coded), not in a later check. This is the enums-as-validation property from Part II, now running as a CLI gate."""
 id = "ce2d8767-24bc-475c-9d0a-bdae1ef2eac3"
 
@@ -17,10 +17,10 @@ id = "ce2d8767-24bc-475c-9d0a-bdae1ef2eac3"
 type = "MultipleChoice"
 prompt.prompt = "Blinding and enums-as-validation are described as 'the same move, one level up'. What is that move?"
 prompt.distractors = [
-  "Writing more tests",
-  "Using serde everywhere",
-  "Keeping files small",
+  "Writing a great many more unit tests, so that every invalid case is caught somewhere within the suite",
+  "Reaching for serde in every single layer, so all data crosses one shared validation boundary",
+  "Keeping each individual source file small, so reviewers can audit the invariants purely by eye",
 ]
-answer.answer = "Putting a correctness property into the type, so it holds structurally rather than depending on anyone remembering it"
+answer.answer = "Putting a correctness property into the type itself, so it holds structurally rather than by memory"
 context = """Both push an invariant into the type. Enums make an invalid value unconstructable; the blank sheet makes a leaking sheet unconstructable (no field for the model). The property is enforced by what the data is, not by discipline."""
 id = "623611b0-3179-4ee9-8c92-e01df52f5ba5"
