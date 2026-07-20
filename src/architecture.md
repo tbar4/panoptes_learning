@@ -17,7 +17,7 @@ How the structs, enums, traits, and functions of the finished Panoptes harness c
 The full four-stage path, orchestrated by the unified `panoptes` CLI. A TOML spec and a 24-cell parameter grid become vignettes; the dispatch loop runs them across models and epochs into an append-only log; blinded sheets go out for coding and come back as typed `CodedRow`s that Python reads downstream.
 
 ```mermaid
-%%{init:{'theme':'base','themeVariables':{'fontSize':'13px','lineColor':'#7c8b9a','textColor':'#1b2530','primaryColor':'#e9eef3','primaryBorderColor':'#9fb0bf','primaryTextColor':'#1b2530','clusterBkg':'#fbfcfd','clusterBorder':'#cbd5de'}}}%%
+%%{init:{'theme':'base','flowchart':{'htmlLabels':false},'themeVariables':{'fontSize':'13px','lineColor':'#7c8b9a','textColor':'#1b2530','primaryColor':'#e9eef3','primaryBorderColor':'#9fb0bf','primaryTextColor':'#1b2530','clusterBkg':'#fbfcfd','clusterBorder':'#cbd5de'}}}%%
 flowchart TB
   cli{{"panoptes CLI · generate · run · code"}}:::cli
   toml[("ca_geo.toml")]:::store --> ft["FamilySpec::from_toml()"]:::gen
