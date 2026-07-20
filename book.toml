@@ -5,6 +5,12 @@ description = "A phased, test-driven course for building the Panoptes evaluation
 language = "en"
 src = "src"
 
+# Playground "Run" ships snippets to play.rust-lang.org, which defaults to
+# edition 2015 (no async/await). The async arc needs 2018+, so pin the
+# playground/rustdoc edition here for every runnable ```rust block.
+[rust]
+edition = "2021"
+
 [output.html]
 default-theme = "navy"
 preferred-dark-theme = "navy"
